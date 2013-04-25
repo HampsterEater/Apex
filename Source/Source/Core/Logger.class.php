@@ -47,11 +47,13 @@ class Logger
 	//	@param content Message to show on error page.
 	// -------------------------------------------------------------
 	public function DefaultError($uri, $status, $title, $content)
-	{	
+	{		
 		// Have we got far enough that we can use a custom error handler?
 		if ($this->m_handlingError == false &&
-			$this->m_engine->RenderingPage = true)
+			$this->m_engine->RenderingPage == true)
 		{
+			$this->m_handlingError = true;
+			
 			$handler = PageHandler::FindHandlerForURI($uri);
 			if ($handler != NULL)
 			{

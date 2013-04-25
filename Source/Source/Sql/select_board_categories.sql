@@ -1,0 +1,1 @@
+SELECT * FROM board_categories ORDER BY order_index ASC

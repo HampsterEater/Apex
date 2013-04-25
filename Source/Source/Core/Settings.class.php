@@ -41,6 +41,9 @@ class Settings
 		
 	// Contains all plain URI arguments.
 	public $URIArguments			= array();
+	
+	// Contains settings specific to the page.
+	public $PageSettings			= array();
 
 	// -------------------------------------------------------------
 	//	These settings are defaults and can/will be overridden by
@@ -95,7 +98,7 @@ class Settings
 											"Source/Extensions/DatabaseProviders/MySQLDatabaseProvider.class.php",
 											
 											// Hooks.
-											"Source/Extensions/HookProviders/PageCacheHookProvider.class.php",
+										//	"Source/Extensions/HookProviders/PageCacheHookProvider.class.php",
 											
 											// Page handlers.
 											"Source/Extensions/PageHandlers/Errors/Error404PageHandler.class.php",

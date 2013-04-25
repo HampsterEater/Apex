@@ -74,6 +74,11 @@ abstract class DatabaseProvider
 	public abstract function Disconnect();
 	
 	// -------------------------------------------------------------
+	//	Returns the number of queries this provider has handled.
+	// -------------------------------------------------------------
+	public abstract function GetQueryCount();
+	
+	// -------------------------------------------------------------
 	//  Creates the given database provider.
 	//
 	//	@param engine Engine that is creating a provider.

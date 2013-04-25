@@ -2,9 +2,18 @@
 
 {% block title %}{{ LANG("404_ERROR_TITLE") }}{% endblock %}
 
-{% block content %}
-	<h2>{{ LANG("404_ERROR_TITLE") }}</h2>
-	CONTENT
-	<br/>
-{% endblock %}
 
+{% block content %}
+<div class="HorizontalBreak"></div>
+<br/>
+
+<center>
+	<div id="error_message_text">{{ LANG("404_ERROR_TITLE") }}<br/><br/>{{ LANG("404_ERROR_MESSAGE") }}</div>
+	<br/>
+	
+	<div id="go_back_text">[<a href="javascript:history.go(-1);">Go Back</a>]</div>
+</center>
+
+<br/>
+<div class="HorizontalBreak"></div>
+{% endblock %}

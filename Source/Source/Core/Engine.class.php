@@ -40,6 +40,9 @@ class Engine
 	// Template settings.
 	public $TwigLoader;
 	public $TwigEnvironment;
+	
+	// Board information.
+	public $BoardCategories;
 		
 	// -------------------------------------------------------------
 	//  Constructs this engine class.
@@ -49,6 +52,9 @@ class Engine
 	// -------------------------------------------------------------
 	public function __construct($settings)
 	{
+		// Setup default values.
+		$this->BoardCategories = array();
+		
 		// Store the start time for rendering.
 		$this->RenderStartTime = microtime(true);
 		$this->RenderingPage = false;
@@ -189,20 +195,49 @@ class Engine
 		Twig_Autoloader::register();
 		$this->TwigLoader 	   = new Twig_Loader_Filesystem($this->Settings->ThemePath . '/Templates/');
 		$this->TwigEnvironment = new Twig_Environment($this->TwigLoader, array(
-			'cache' 		=> $this->Settings->TemplateCacheDirectory,
-			'auto_reload' 	=> $this->Settings->TemplateAutoReload
+			'cache' 			=> $this->Settings->TemplateCacheDirectory,
+			'auto_reload' 		=> $this->Settings->TemplateAutoReload,
+			'strict_variables' 	=> true
 		));		
 		
 		// Add some general global settings.
-		$this->TwigEnvironment->addGlobal("BASE_PATH", 		BASE_PATH);
-		$this->TwigEnvironment->addGlobal("BASE_URI", 		BASE_URI);
-		$this->TwigEnvironment->addGlobal("BASE_URI_DIR", 	BASE_URI_DIR);
-		$this->TwigEnvironment->addGlobal("Settings", 		$this->Settings);
+		$this->TwigEnvironment->addGlobal("BASE_PATH", 			BASE_PATH);
+		$this->TwigEnvironment->addGlobal("BASE_URI", 			BASE_URI);
+		$this->TwigEnvironment->addGlobal("BASE_URI_DIR", 		BASE_URI_DIR);
+		$this->TwigEnvironment->addGlobal("BASE_SCRIPT_URI", 	BASE_SCRIPT_URI);
+		$this->TwigEnvironment->addGlobal("THEME_DIR_URI", 		BASE_URI_DIR . $this->Settings->ThemePath);
+		$this->TwigEnvironment->addGlobal("Settings", 			$this->Settings);
+		$this->TwigEnvironment->addGlobal("Engine", 			$this);
 		
-		// Add language-string retrieval function to templates.
-		$function = new Twig_SimpleFunction('LANG', function ($key) {
-			return $this->Language->Get($key);
-		});
+		// Add LANG function which allows the template to get a language
+		// specific string with optiomal formatting pattern.
+		$function = new Twig_SimpleFunction('LANG', 
+			function ($key) 
+			{
+				$args 	 = func_get_args();
+				$pattern = $this->Language->Get($key);
+				
+				if (count($args) == 1)
+				{
+					return $pattern;
+				}
+				else
+				{
+					array_shift($args);
+					return vsprintf($pattern, $args);
+				}
+			}
+		);
+		$this->TwigEnvironment->addFunction($function);
+
+		// Add microtime function, used mainly for getting the 
+		// templates generation timestamp.
+		$function = new Twig_SimpleFunction('microtime', 
+			function () 
+			{
+				return microtime(true);
+			}
+		);
 		$this->TwigEnvironment->addFunction($function);
 	}
 	
@@ -211,13 +246,37 @@ class Engine
 	// -------------------------------------------------------------
 	public function LoadDatabaseSettings()
 	{
+		// Load global settings.
 		$result = $this->Database->Query("select_global_settings");
 		foreach ($result->Rows as $row)
 		{
 			$this->Settings->DatabaseSettings[$row['name']] = $row['value'];
 		}
-		
 	}
+	// -------------------------------------------------------------
+	//	Loads generation information about what boards
+	//	are on this site.
+	// -------------------------------------------------------------
+	public function LoadBoardInformation()
+	{
+		// Load board categories.
+		$result = $this->Database->Query("select_board_categories");		
+		$this->Settings->PageSettings['board_categories'] = array();
+		
+		foreach ($result->Rows as $row)
+		{
+			array_push($this->Settings->PageSettings['board_categories'], $row);
+		}
+		
+		// Load boards.
+		$result = $this->Database->Query("select_boards");		
+		$this->Settings->PageSettings['boards'] = array();
+		
+		foreach ($result->Rows as $row)
+		{
+			array_push($this->Settings->PageSettings['boards'], $row);
+		}
+	}	
 	
 	// -------------------------------------------------------------
 	//  Core function, takes the users requests and does what is
@@ -237,8 +296,9 @@ class Engine
 		// Connect to database.
 		$this->Database->Connect();
 				
-		// Load settings from database.
+		// Load all information we need from database.
 		$this->LoadDatabaseSettings();
+		$this->LoadBoardInformation();
 		
 		// Invoke the intitial event.
 		HookProvider::InvokeEvent("OnPostDatabaseConnection");
@@ -296,6 +356,10 @@ class Engine
 	{
 		$template = NULL;
 		$error_msg = "";
+		
+		// Merge template settings with page settings.
+		$this->Settings->PageSettings = array_merge($this->Settings->PageSettings, $settings);
+		
 		try
 		{
 			// If we are rendering the mobile version of this site, use
@@ -312,7 +376,7 @@ class Engine
 			$this->Logger->InternalError("Could not find (or could not load) template '{$template_path}'.<br/><br/>Internal Error:<br/>" . str_replace("\n", "<br/>", (string)$e));
 		}
 		
-		echo $template->render($settings);
+		echo $template->render($this->Settings->PageSettings);
 	}
 	
 }

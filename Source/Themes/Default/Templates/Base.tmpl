@@ -2,18 +2,61 @@
 <html>
     <head>
         {% block head %}
-            <link rel="stylesheet" href="{{ BASE_URI_DIR }}{{ Settings.ThemePath }}StyleSheets/base.css" />
+			<link rel="shortcut icon" type="image/ico" href="{{ THEME_DIR_URI }}Images/favicon.ico" />			
+            <link rel="stylesheet" href="{{ THEME_DIR_URI }}StyleSheets/base.css" />
             <title>
 				{% block title %}
-					{{ Settings.DatabaseSettings['SITE_NAME'] }}
+					{{ Settings.DatabaseSettings['site_name'] }}
 				{% endblock %}
 			</title>
         {% endblock %}
     </head>
     <body>
         {% block body %}
-			<div id="footer">
+			<div id="header">
 				{% block header %}
+					<div id="menu">
+						<table style="width: 100%;" cellspacing="0px" cellpadding="0px">
+							<tr>
+								<td id="menu_icon_td">
+									<a href="{{ BASE_URI_DIR }}">
+										<img src="{{ THEME_DIR_URI }}Images/small_logo.png" id="menu_logo">
+									</a>
+								</td>
+								<td id="menu_navigation_td">
+									<div id="menu_container">
+										{% for category in board_categories %}
+											{% if category.hidden == 0 %}
+												<ul>
+													<li>
+														<a href="#">{{ category.name }}</a>
+														<ul>
+															{% for board in boards %}
+																{% if board.hidden == 0 and board.category_id == category.id %}
+																	<a href="{{ BASE_URI_DIR ~ board.url }}/">{{ board.name }}</a>
+																{% endif %}
+															{% endfor %}
+														</ul>
+													</li>
+												</ul>	
+											{% endif %}
+										{% endfor %}
+									</div>
+								</td>
+								<td  id="menu_management_td">
+									<a href="{{ BASE_URI_DIR }}">{{ LANG("MENU_HOME") }}</a> -
+									<a href="{{ BASE_URI_DIR }}preferences/">{{ LANG("MENU_PREFERENCES") }}</a> -
+									<a href="{{ BASE_URI_DIR }}manage/">{{ LANG("MENU_MANAGE") }}</a>
+								</td>							
+							</tr>
+						</table>
+					</div>
+					{% block page_title %}
+						<div id="small_title_container">
+							<div id="small_title">{{ Settings.DatabaseSettings['site_name'] }}</div>
+							<div id="small_subtitle">{{ Settings.DatabaseSettings['site_description'] }}</div>
+						</div>
+					{% endblock %}
 				{% endblock %}
 			</div>
 			<div id="content">
@@ -22,6 +65,8 @@
 			</div>
 			<div id="footer">
 				{% block footer %}
+					<div id="copyright">{{ LANG("COPYRIGHT_TEXT") }}</div>
+					<div id="generation_stamp">{{ LANG("GENERATION_STRING", ((microtime()-Engine.RenderStartTime) * 1000), Engine.Database.GetQueryCount(), "now"|date(LANG("DATETIME_FORMAT"))) }}</div>
 				{% endblock %}
 			</div>
 		{% endblock %}

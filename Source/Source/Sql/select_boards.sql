@@ -1,0 +1,1 @@
+SELECT * FROM boards ORDER BY order_index ASC

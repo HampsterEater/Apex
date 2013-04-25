@@ -25,6 +25,7 @@ class MySQLDatabaseProvider extends DatabaseProvider
 {
 	// Database link identifier.
 	private $m_connection;
+	private $m_queryCount;
 
 	// Engine instance.
 	private $m_engine;
@@ -97,6 +98,8 @@ class MySQLDatabaseProvider extends DatabaseProvider
 				$this->m_engine->Logger->InternalError("Failed to read prepared query with the name '" . $name . "'.");
 			}
 			
+			$this->m_queryCount++;
+			
 			try
 			{
 				$stmt 					= $this->m_connection->prepare($query);
@@ -132,6 +135,14 @@ class MySQLDatabaseProvider extends DatabaseProvider
 	public function Disconnect()
 	{
 		$this->m_connection = null;
+	}
+	
+	// -------------------------------------------------------------
+	//	Returns the number of queries this provider has handled.
+	// -------------------------------------------------------------
+	public function GetQueryCount()
+	{
+		return $this->m_queryCount;
 	}
 	
 }
