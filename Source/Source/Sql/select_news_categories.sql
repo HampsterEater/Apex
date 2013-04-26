@@ -1,0 +1,1 @@
+SELECT * FROM news_categories ORDER BY order_index ASC

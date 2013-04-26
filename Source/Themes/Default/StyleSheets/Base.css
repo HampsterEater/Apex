@@ -1,3 +1,13 @@
+/* -----------------------------------------------------------
+	Apex Imageboard Software
+	Copyright (C) 2013 TwinDrills, All Rights Reserved
+	----------------------------------------------------------
+	File: 	base.css
+	Author: tim
+	----------------------------------------------------------
+ 	Default theme stylesheet.
+ ------------------------------------------------------------- */
+
 body 
 {   
 	background: 				#1C1C1C;
@@ -157,7 +167,7 @@ a:hover
 {
 	text-align: 	center;
 	margin-bottom: 	20px;
-	margin-top: 	30px;
+	margin-top: 	40px;
 }
 
 #small_title
@@ -180,6 +190,142 @@ a:hover
 #content
 {
 
+}
+
+#news_container
+{
+    width: 			90%;
+    margin-left: 	auto;
+    margin-right: 	auto;
+	padding-top:	20px;
+	padding-bottom:	10px;
+}
+
+.news_page
+{
+	display: none;
+}
+
+#news_menu
+{
+}
+
+#news_menu ul
+{
+    margin: 		0;
+    list-style: 	none;
+    padding: 		0px;
+	margin:			0px;
+	padding-left: 	0px;
+}
+
+.news_button
+{
+    display: 			inline-block;
+	width:				50px;
+	
+    border-right: 		2px solid #555;
+    padding-right: 		5px; 
+	padding-top:		3px; 
+	padding-bottom:		3px;
+    background-color: 	#222;  
+    cursor: 			hand;
+    cursor: 			pointer;
+    -moz-border-radius: 2px 2px 0px 0px;
+    border-radius: 		2px 2px 0px 0px;
+    padding-left: 		10px;
+    border-left: 		2px solid #555;
+    border-top: 		2px solid #555;	
+}
+
+.news_button:hover
+{
+    display: 			inline-block;
+	width:				50px;
+	
+    border-right: 		2px solid #555;
+    padding-right: 		5px; 
+	padding-top:		3px; 
+	padding-bottom:		3px;
+    background-color: 	#222;  
+    cursor: 			hand;
+    cursor: 			pointer;
+    -moz-border-radius: 2px 2px 0px 0px;
+    border-radius: 		2px 2px 0px 0px;
+    padding-left: 		10px;
+    border-left: 		2px solid #555;
+    border-top: 		2px solid #AAAAAA; 	
+}
+
+.news_button_selected
+{
+    display: 			inline-block;
+	width:				50px;
+	
+	font-weight:		bold;
+    border-right: 		2px solid #555;
+    padding-right: 		5px; 
+	padding-top:		3px; 
+	padding-bottom:		3px;
+    background-color: 	#222; 
+    cursor: 			hand;
+    cursor: 			pointer;
+    -moz-border-radius: 2px 2px 0px 0px;
+    border-radius: 		2px 2px 0px 0px;
+    padding-left: 		10px;
+    border-left: 		2px solid #555;
+    border-top: 		2px solid #FFFFFF; 	
+	
+	position:			relative;
+	top: 				2px;
+}
+
+.news_button_selected:hover
+{
+    display: 			inline-block;
+	width:				50px;
+	
+	font-weight:		bold;
+    border-right: 		2px solid #555;
+    padding-right: 		5px; 
+	padding-top:		3px; 
+	padding-bottom:		3px;
+    background-color: 	#222;  
+    cursor: 			hand;
+    cursor: 			pointer;
+    -moz-border-radius: 2px 2px 0px 0px;
+    border-radius: 		2px 2px 0px 0px;
+    padding-left: 		10px;
+    border-left: 		2px solid #555;
+    border-top: 		2px solid #FFFFFF; 	
+	
+	position:			relative;
+	top: 				2px;
+}
+
+#news_content
+{
+    color: 			#FFFFFF;
+    background: 	#333;
+    border: 		2px solid #555;
+    border-radius: 	0px 0px 3px 3px;
+
+	padding: 		8px;
+	
+	margin-bottom: 	15px;
+}
+
+#news_title
+{
+	padding:		8px;
+	
+	padding: 		3px;
+	padding-left:	8px;
+		
+    color: 			#FFFFFF;
+    background: 	#222;  
+    border: 		2px solid #555;
+	border-bottom:	0px;
 }
 
 #copyright

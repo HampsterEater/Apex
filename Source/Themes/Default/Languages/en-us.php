@@ -16,22 +16,27 @@
 // -------------------------------------------------------------
 //	Locale strings.
 // -------------------------------------------------------------
-$LANG['DATE_FORMAT'] 	 = 'd/m/y';
-$LANG['TIME_FORMAT'] 	 = 'H:i:s';
-$LANG['DATETIME_FORMAT'] = 'd/m/Y H:i:s';
+$LANG['DATE_FORMAT'] 	 	= 'd/m/y';
+$LANG['TIME_FORMAT'] 	 	= 'H:i:s';
+$LANG['DATETIME_FORMAT'] 	= 'd/m/Y H:i:s';
 
 // -------------------------------------------------------------
 //	Header strings.
 // -------------------------------------------------------------
-$LANG['MENU_HOME']	   	   = "Home";
-$LANG['MENU_PREFERENCES']  = "Preferences";
-$LANG['MENU_MANAGE']	   = "Manage";
+$LANG['MENU_HOME']	   	   	= "Home";
+$LANG['MENU_PREFERENCES']  	= "Preferences";
+$LANG['MENU_MANAGE']	   	= "Manage";
 
 // -------------------------------------------------------------
 //	Footer strings.
 // -------------------------------------------------------------
-$LANG['COPYRIGHT_TEXT']	   = "Apex ImageBoard Software (C) TwinDrills 2013";
-$LANG['GENERATION_STRING'] = "Generated in %dms with %d query(s) at %s";
+$LANG['COPYRIGHT_TEXT']	   	= "Apex ImageBoard Software (C) TwinDrills 2013";
+$LANG['GENERATION_STRING'] 	= "Generated in %dms with %d query(s) at %s";
+
+// -------------------------------------------------------------
+//	Generic
+// -------------------------------------------------------------
+$LANG['GO_BACK_LINK']	   	= "Go Back";
 
 // -------------------------------------------------------------
 //	404 Not Found
@@ -42,3 +47,4 @@ $LANG['404_ERROR_MESSAGE'] 	= 'The page you requested could not be found.';
 // -------------------------------------------------------------
 //	500 Internal Server
 // -------------------------------------------------------------
+$LANG['500_ERROR_TITLE'] 	= '500 Internal Server Error';

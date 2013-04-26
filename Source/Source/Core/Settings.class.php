@@ -103,6 +103,7 @@ class Settings
 											// Page handlers.
 											"Source/Extensions/PageHandlers/Errors/Error404PageHandler.class.php",
 											"Source/Extensions/PageHandlers/Errors/Error500PageHandler.class.php",
+											"Source/Extensions/PageHandlers/HomePageHandler.class.php",
 										);	
 										
 	// Cache settings, some of these settings may or may not

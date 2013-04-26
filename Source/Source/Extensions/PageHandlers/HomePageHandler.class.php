@@ -4,10 +4,11 @@
 //	Apex Imageboard Software
 //	Copyright (C) 2013 TwinDrills, All Rights Reserved
 // -------------------------------------------------------------
-//	File: 	error404pagehandler.class.php
+//	File: 	homepagehandler.class.php
 //	Author: tim
 // -------------------------------------------------------------
-//	This file contains the page handler for 404 errors.
+//	This file contains the page handler for the "home" index
+//	page. Showing news/faq/etc
 // -------------------------------------------------------------
 
 // Check we are not being accessed directly.
@@ -17,12 +18,13 @@ if (!defined("ENTRY_POINT"))
 }
 
 // -------------------------------------------------------------
-//	This class handles 404 not found errors.
+//	This class handles showing the "home" index page. 
+//	News/FAQ/etc.
 //
 //	URI for this handler is:
-// 		/index.php/error/404
+// 		/index.php
 // -------------------------------------------------------------
-class Error404PageHandler extends PageHandler
+class HomePageHandler extends PageHandler
 {
 
 	// Engine that constructed this class.
@@ -43,9 +45,7 @@ class Error404PageHandler extends PageHandler
 	// -------------------------------------------------------------
 	public function CanHandleURI($uri_arguments)
 	{
-		if (count($uri_arguments) == 2 &&
-			$uri_arguments[0] 	  == "error" &&
-			$uri_arguments[1]	  == "404")
+		if (count($uri_arguments) == 0)
 		{
 			return true;
 		}
@@ -70,7 +70,25 @@ class Error404PageHandler extends PageHandler
 	// -------------------------------------------------------------
 	public function RenderPage($arguments = array())
 	{
-		$this->m_engine->RenderTemplate("Errors/404.tmpl", $arguments);
+		$arguments['news_categories'] = array();
+		$arguments['news_items'] = array();
+
+		// Load all news categories.
+		$result = $this->m_engine->Database->Query("select_news_categories");
+		foreach ($result->Rows as $row)
+		{
+			array_push($arguments['news_categories'], $row);
+		}
+		
+		// Load other pages.
+		$result = $this->m_engine->Database->Query("select_news_items");
+		foreach ($result->Rows as $row)
+		{
+			array_push($arguments['news_items'], $row);
+		}
+	
+		// Render the template.
+		$this->m_engine->RenderTemplate("Home.tmpl", $arguments);
 	}
 	
 }

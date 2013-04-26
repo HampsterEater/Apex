@@ -1,0 +1,1 @@
+SELECT * FROM news_items ORDER BY create_time DESC

@@ -56,7 +56,7 @@ abstract class PageHandler
 	//	Invoked when this page handler is responsible for rendering
 	//	the current page.
 	// -------------------------------------------------------------
-	abstract public function RenderPage();
+	abstract public function RenderPage($arguments = array());
 	
 	// -------------------------------------------------------------
 	//  Creates the all the page handlers providers 

@@ -1,0 +1,44 @@
+{% extends "base.tmpl" %}
+
+{% block javascript_imports %}
+<script type="text/javascript" src="{{ THEME_DIR_URI }}JavaScript/Home.js"></script>
+{% endblock %}
+
+{% block page_title %}
+<div id="title_container">
+	<div id="title">{{ Settings.DatabaseSettings['site_name'] }}</div>
+	<div id="subtitle">{{ Settings.DatabaseSettings['site_description'] }}</div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="news_container">
+	<div id="news_menu">
+		<ul>
+			{% for category in news_categories %}
+				<li class="news_button" id="{{ category.id }}_button"  onclick="select_news_menu('{{ category.id }}');">{{ category.name }}</li>
+			{% endfor %}
+		</ul>
+	</div>
+	
+	{% for category in news_categories %}
+		<div id="{{ category.id }}" class="news_page">
+			{% for item in news_items %}
+				{% if item.category_id == category.id %}
+					<div id="news_title">
+						{% if item.author == "" %}
+							<b>{{ item.title }}</b> @ {{ item.create_time|date(LANG("DATETIME_FORMAT")) }}
+						{% else %}
+							<b>{{ item.title }}</b> by {{ item.author }} @ {{ item.create_time|date(LANG("DATETIME_FORMAT")) }}
+						{% endif %}
+					</div>
+					<div id="news_content">
+						{{ item.body|raw }}
+					</div>			
+				{% endif %}
+			{% endfor %}
+		</div>
+	{% endfor %}
+	
+</div>
+{% endblock %}

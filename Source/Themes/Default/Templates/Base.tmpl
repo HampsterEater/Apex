@@ -2,6 +2,9 @@
 <html>
     <head>
         {% block head %}
+			<script type="text/javascript" src="{{ THEME_DIR_URI }}JavaScript/Libraries/jQuery.js"></script>
+			{% block javascript_imports %}
+			{% endblock %}
 			<link rel="shortcut icon" type="image/ico" href="{{ THEME_DIR_URI }}Images/favicon.ico" />			
             <link rel="stylesheet" href="{{ THEME_DIR_URI }}StyleSheets/base.css" />
             <title>

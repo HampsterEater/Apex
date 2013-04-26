@@ -1,13 +1,13 @@
 {% extends "base.tmpl" %}
 
-{% block title %}{{ LANG("404_ERROR_TITLE") }}{% endblock %}
+{% block title %}{{ LANG("500_ERROR_TITLE") }}{% endblock %}
 
 {% block content %}
 <div class="HorizontalBreak"></div>
 <br/>
 
 <center>
-	<div id="error_message_text">{{ LANG("404_ERROR_TITLE") }}<br/><br/>{{ LANG("404_ERROR_MESSAGE") }}</div>
+	<div id="error_message_text">{{ LANG("500_ERROR_TITLE") }}<br/><br/>{{ message }}</div>
 	<br/>
 	
 	<div id="go_back_text">[<a href="javascript:history.go(-1);">{{ LANG("GO_BACK_LINK") }}</a>]</div>

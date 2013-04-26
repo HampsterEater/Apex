@@ -68,9 +68,9 @@ class Error500PageHandler extends PageHandler
 	//	Invoked when this page handler is responsible for rendering
 	//	the current page.
 	// -------------------------------------------------------------
-	public function RenderPage()
+	public function RenderPage($arguments = array())
 	{
-		$this->m_engine->RenderTemplate("Errors/500.tmpl", array());
+		$this->m_engine->RenderTemplate("Errors/500.tmpl", $arguments);
 	}
 	
 }

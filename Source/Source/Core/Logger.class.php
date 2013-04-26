@@ -57,7 +57,7 @@ class Logger
 			$handler = PageHandler::FindHandlerForURI($uri);
 			if ($handler != NULL)
 			{
-				$handler->RenderPage();
+				$handler->RenderPage(array("message" => $content));
 				exit(1);
 			}
 		}
