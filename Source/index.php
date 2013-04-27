@@ -61,6 +61,7 @@ require(BASE_PATH . "Source/Core/Settings.class.php");
 require(BASE_PATH . "Source/Core/Language.class.php");
 require(BASE_PATH . "Source/Core/Engine.class.php");
 require(BASE_PATH . "Source/Core/Logger.class.php");
+require(BASE_PATH . "Source/Core/Member.class.php");
 require(BASE_PATH . "Source/Core/DatabaseProvider.class.php");
 require(BASE_PATH . "Source/Core/CacheProvider.class.php");
 require(BASE_PATH . "Source/Core/HookProvider.class.php");

@@ -1,0 +1,1 @@
+SELECT * FROM password_reset_links WHERE link_hash=:link_hash

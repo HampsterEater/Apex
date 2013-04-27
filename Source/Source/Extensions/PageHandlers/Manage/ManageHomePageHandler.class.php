@@ -4,11 +4,11 @@
 //	Apex Imageboard Software
 //	Copyright (C) 2013 TwinDrills, All Rights Reserved
 // -------------------------------------------------------------
-//	File: 	homepagehandler.class.php
+//	File: 	managehomepagehandler.class.php
 //	Author: tim
 // -------------------------------------------------------------
-//	This file contains the page handler for the "home" index
-//	page. Showing news/faq/etc
+//	This file contains the page handler for the "home" page in 
+//	the management area.
 // -------------------------------------------------------------
 
 // Check we are not being accessed directly.
@@ -18,13 +18,13 @@ if (!defined("ENTRY_POINT"))
 }
 
 // -------------------------------------------------------------
-//	This class handles showing the "home" index page. 
-//	News/FAQ/etc.
+//	This class handles showing the "home" page in the 
+//	management area.
 //
 //	URI for this handler is:
-// 		/index.php
+// 		/index.php/manage
 // -------------------------------------------------------------
-class HomePageHandler extends PageHandler
+class ManageHomePageHandler extends PageHandler
 {
 
 	// Engine that constructed this class.
@@ -45,7 +45,8 @@ class HomePageHandler extends PageHandler
 	// -------------------------------------------------------------
 	public function CanHandleURI($uri_arguments)
 	{
-		if (count($uri_arguments) == 0)
+		if (count($uri_arguments) == 1 &&
+			$uri_arguments[0] == "manage")
 		{
 			return true;
 		}
@@ -70,25 +71,15 @@ class HomePageHandler extends PageHandler
 	// -------------------------------------------------------------
 	public function RenderPage($arguments = array())
 	{
-		$arguments['news_categories'] = array();
-		$arguments['news_items'] = array();
-
-		// Load all news categories.
-		$result = $this->m_engine->Database->Query("select_news_categories");
-		foreach ($result->Rows as $row)
+		// If we are not logged in, redirect to login page.
+		if ($this->m_engine->IsLoggedIn() == false)
 		{
-			array_push($arguments['news_categories'], $row);
-		}
-		
-		// Load other pages.
-		$result = $this->m_engine->Database->Query("select_news_items");
-		foreach ($result->Rows as $row)
-		{
-			array_push($arguments['news_items'], $row);
+			BrowserHelper::RedirectExit(BASE_SCRIPT_URI . "manage/login");
+			return;
 		}
 	
 		// Render the template.
-		$this->m_engine->RenderTemplate("Home.tmpl", $arguments);
+		$this->m_engine->RenderTemplate("Manage/Home.tmpl", $arguments);
 	}
 	
 }

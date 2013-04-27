@@ -1,0 +1,1 @@
+DELETE FROM password_reset_links WHERE create_time < :oldest_time

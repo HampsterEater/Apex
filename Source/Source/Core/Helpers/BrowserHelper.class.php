@@ -102,4 +102,13 @@ class BrowserHelper
 		return $result;
 	}
 
+	// -------------------------------------------------------------
+	//	Redirects the user to the given page and exits.
+	// -------------------------------------------------------------
+	public static function RedirectExit($location)
+	{
+		header("Location: " . $location);
+		exit(0);
+	}	
+	
 }

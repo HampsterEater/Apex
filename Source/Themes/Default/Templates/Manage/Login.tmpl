@@ -1,0 +1,49 @@
+{% extends "Base.tmpl" %}
+
+{% block title %}{{ Settings.DatabaseSettings['site_name'] }} - {{ LANG("MANAGE_TITLE") }}{% endblock %}
+
+{% block content %}
+<div class="HorizontalBreak"></div>
+<br/>
+
+{% if error_type=="" %}
+	<br/>
+{% else %}
+	<center>
+		<div id="error_message_text_small">	
+		{% if error_type=="no_username" %}
+			{{ LANG("NO_USERNAME") }}
+		{% elseif error_type=="no_password" %}
+			{{ LANG("NO_PASSWORD") }}
+		{% elseif error_type=="invalid_login" %}
+			{{ LANG("INVALID_LOGIN") }}
+		{% elseif error_type=="account_disabled" %}
+			{{ LANG("ACCOUNT_DISABLED") }}
+		{% endif %}		
+		<br/><br/></div>
+	</center>
+{% endif %}
+
+<form enctype="multipart/form-data" action="{{ BASE_SCRIPT_URI }}manage/login/" method="POST" name="loginform" id="loginform">
+
+	<input type="hidden" name="SESSION" id="SESSION" value="{{ SESSION_ID }}"/>
+
+	<table cellspacing="2px" cellpadding="0px" id="loginbox">	
+		<tr>
+			<td class="postblock">{{ LANG("USERNAME_LABEL") }}</td>
+			<td><input type="text" name="username" id="username" style="width:200px;" value=""/></td>
+		</tr>
+		<tr>
+			<td class="postblock">{{ LANG("PASSWORD_LABEL") }}</td>
+			<td><input type="password" name="password" id="password" style="width:119px;" value="" style="password"/> <input type="submit" value="Submit"/></td>
+		</tr>
+		<tr>
+			<td colspan="2"style="text-align:center; font-size: 75%;"><br/><a href="{{ BASE_SCRIPT_URI }}manage/resetpassword/">{{ LANG("FORGOTTEN_PASSWORD_LINK") }}</a></td>
+		</tr>
+	</table>
+
+</form>
+
+<br/>
+<div class="HorizontalBreak"></div>
+{% endblock %}

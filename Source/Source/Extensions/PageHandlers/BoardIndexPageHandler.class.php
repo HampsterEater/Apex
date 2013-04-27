@@ -4,11 +4,10 @@
 //	Apex Imageboard Software
 //	Copyright (C) 2013 TwinDrills, All Rights Reserved
 // -------------------------------------------------------------
-//	File: 	homepagehandler.class.php
+//	File: 	boardindexpagehandler.class.php
 //	Author: tim
 // -------------------------------------------------------------
-//	This file contains the page handler for the "home" index
-//	page. Showing news/faq/etc
+//	This file contains the code for showing the board-index.
 // -------------------------------------------------------------
 
 // Check we are not being accessed directly.
@@ -18,13 +17,12 @@ if (!defined("ENTRY_POINT"))
 }
 
 // -------------------------------------------------------------
-//	This class handles showing the "home" index page. 
-//	News/FAQ/etc.
+//	This class handles showing board index page.
 //
 //	URI for this handler is:
-// 		/index.php
+// 		/board-name[/page-index]
 // -------------------------------------------------------------
-class HomePageHandler extends PageHandler
+class BoardIndexPageHandler extends PageHandler
 {
 
 	// Engine that constructed this class.
@@ -45,9 +43,33 @@ class HomePageHandler extends PageHandler
 	// -------------------------------------------------------------
 	public function CanHandleURI($uri_arguments)
 	{
-		if (count($uri_arguments) == 0)
+		if (count($uri_arguments) == 1 ||
+			count($uri_arguments) == 2)
 		{
-			return true;
+			$board_name = $uri_arguments[0];
+		
+			// Check first argument is a board name.
+			foreach ($this->m_engine->Settings->PageSettings['boards'] as $board)
+			{
+				if ($board['url'] == $board_name)
+				{
+					// Is page a correct integer.
+					if (count($uri_arguments) == 2)
+					{
+						$page_index = $uri_arguments[1];
+						if (is_numeric($page_index))
+						{
+							return true;
+						}
+					}
+					else
+					{
+						return true;
+					}
+				}				
+			}
+			
+			return false;
 		}
 		
 		return false;
@@ -69,26 +91,24 @@ class HomePageHandler extends PageHandler
 	//	the current page.
 	// -------------------------------------------------------------
 	public function RenderPage($arguments = array())
-	{
-		$arguments['news_categories'] = array();
-		$arguments['news_items'] = array();
-
-		// Load all news categories.
-		$result = $this->m_engine->Database->Query("select_news_categories");
-		foreach ($result->Rows as $row)
+	{		
+		$uri_arguments		= $this->m_engine->Settings->URIArguments;
+		$board_uri  		= $uri_arguments[0];
+		$page_index 		= count($uri_arguments) > 1 ? intval($uri_arguments[1]) - 1 : 0;
+		$arguments['board'] = null;
+		
+		// Load board settings.
+		$arguments['board'] = $this->m_engine->GetBoardByUri($board_uri);
+		if ($arguments['board'] == null)
 		{
-			array_push($arguments['news_categories'], $row);
+			$this->m_engine->Logger->InternalError("Could not retrieve board information (for uri /{$board_uri}/) from database.");
 		}
 		
-		// Load other pages.
-		$result = $this->m_engine->Database->Query("select_news_items");
-		foreach ($result->Rows as $row)
-		{
-			array_push($arguments['news_items'], $row);
-		}
+		// Is an access password required?
+		
 	
 		// Render the template.
-		$this->m_engine->RenderTemplate("Home.tmpl", $arguments);
+		$this->m_engine->RenderTemplate("BoardIndex.tmpl", $arguments);
 	}
 	
 }

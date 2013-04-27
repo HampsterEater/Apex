@@ -4,11 +4,11 @@
 //	Apex Imageboard Software
 //	Copyright (C) 2013 TwinDrills, All Rights Reserved
 // -------------------------------------------------------------
-//	File: 	homepagehandler.class.php
+//	File: 	manageloginpagehandler.class.php
 //	Author: tim
 // -------------------------------------------------------------
-//	This file contains the page handler for the "home" index
-//	page. Showing news/faq/etc
+//	This file contains the page handler for the "login" page in 
+//	the management area.
 // -------------------------------------------------------------
 
 // Check we are not being accessed directly.
@@ -18,13 +18,13 @@ if (!defined("ENTRY_POINT"))
 }
 
 // -------------------------------------------------------------
-//	This class handles showing the "home" index page. 
-//	News/FAQ/etc.
+//	This class handles showing the "home" page in the 
+//	management area.
 //
 //	URI for this handler is:
-// 		/index.php
+// 		/index.php/manage/login
 // -------------------------------------------------------------
-class HomePageHandler extends PageHandler
+class ManageLoginPageHandler extends PageHandler
 {
 
 	// Engine that constructed this class.
@@ -45,7 +45,9 @@ class HomePageHandler extends PageHandler
 	// -------------------------------------------------------------
 	public function CanHandleURI($uri_arguments)
 	{
-		if (count($uri_arguments) == 0)
+		if (count($uri_arguments) == 2 &&
+			$uri_arguments[0] == "manage" &&
+			$uri_arguments[1] == "login")
 		{
 			return true;
 		}
@@ -70,25 +72,68 @@ class HomePageHandler extends PageHandler
 	// -------------------------------------------------------------
 	public function RenderPage($arguments = array())
 	{
-		$arguments['news_categories'] = array();
-		$arguments['news_items'] = array();
-
-		// Load all news categories.
-		$result = $this->m_engine->Database->Query("select_news_categories");
-		foreach ($result->Rows as $row)
+		// Are we even logged in?
+		if ($this->m_engine->IsLoggedIn())
 		{
-			array_push($arguments['news_categories'], $row);
+			BrowserHelper::RedirectExit(BASE_SCRIPT_URI . 'manage');
 		}
-		
-		// Load other pages.
-		$result = $this->m_engine->Database->Query("select_news_items");
-		foreach ($result->Rows as $row)
+	
+		$arguments = array_merge($arguments,
+			array
+			(
+				'error_type' => '',
+			)		
+		);	
+	
+		// Have we submitted the form?
+		if (isset($this->m_engine->Settings->RequestValues['username']) &&
+			isset($this->m_engine->Settings->RequestValues['password']))
 		{
-			array_push($arguments['news_items'], $row);
+			$username = trim($this->m_engine->Settings->RequestValues['username']);
+			$password = trim($this->m_engine->Settings->RequestValues['password']);
+
+			if ($username == "")
+			{
+				$arguments['error_type'] = 'no_username';
+			}
+			else if ($password == "")
+			{
+				$arguments['error_type'] = 'no_password';
+			}
+			else 
+			{
+				$result = $this->m_engine->Database->Query("select_member_by_username", array(":username" => $username));
+				
+				if (count($result->Rows) != 1)
+				{
+					$arguments['error_type'] = 'invalid_login';
+				}	
+				else
+				{
+					$member = $result->Rows[0];
+					if ($member['can_log_in'] != true)
+					{
+						$arguments['error_type'] = 'account_disabled';
+					}
+					else
+					{
+						$hashed = hash("sha512", $password . $member['password_salt']);
+						if ($hashed == $member['password'])
+						{
+							$this->m_engine->LoginAsMember($member['id']);
+							BrowserHelper::RedirectExit(BASE_SCRIPT_URI . "manage/");
+						}
+						else
+						{
+							$arguments['error_type'] = 'invalid_login';
+						}
+					}
+				}
+			}
 		}
 	
 		// Render the template.
-		$this->m_engine->RenderTemplate("Home.tmpl", $arguments);
+		$this->m_engine->RenderTemplate("Manage/Login.tmpl", $arguments);
 	}
 	
 }

@@ -1,4 +1,4 @@
- <?php
+<?php
 
 // -------------------------------------------------------------
 //	Apex Imageboard Software
@@ -44,6 +44,10 @@ class Engine
 	// Board information.
 	public $BoardCategories;
 		
+	// Login state.
+	public $SessionID;
+	public $Member;
+		
 	// -------------------------------------------------------------
 	//  Constructs this engine class.
 	//
@@ -72,12 +76,12 @@ class Engine
 			}			
 			else
 			{
-				define("BASE_SCRIPT_URI", BASE_URI_DIR . '/');
+				define("BASE_SCRIPT_URI", BASE_URI_DIR );
 			}
 		}
 		else
 		{		
-			define("BASE_SCRIPT_URI", BASE_URI_DIR . '/index.php/');
+			define("BASE_SCRIPT_URI", BASE_URI_DIR . 'index.php/');
 		}
 	
 		// Include all extensions.
@@ -133,7 +137,7 @@ class Engine
 		$this->Settings->URIArguments = array();		
 		if (isset($_SERVER["PATH_INFO"]))
 		{
-			$this->Settings->URIArguments = explode("/", ltrim($_SERVER["PATH_INFO"], '/'));
+			$this->Settings->URIArguments = explode("/", rtrim(ltrim($_SERVER["PATH_INFO"], '/'), '/'));
 		}
 		
 		// Clean up request variables and add them to settings.
@@ -253,6 +257,7 @@ class Engine
 			$this->Settings->DatabaseSettings[$row['name']] = $row['value'];
 		}
 	}
+	
 	// -------------------------------------------------------------
 	//	Loads generation information about what boards
 	//	are on this site.
@@ -279,6 +284,125 @@ class Engine
 	}	
 	
 	// -------------------------------------------------------------
+	//	Loads the users login state from cookies/database.
+	// -------------------------------------------------------------
+	public function LoadLoginState()
+	{
+		session_start();
+		$this->SessionID = session_id();
+		
+		$member_id = 0;
+
+		// If we have a given member ID, load that state.
+		if (isset($_SESSION['member_id']))
+		{
+			$this->Member = new Member($this, $_SESSION['member_id']);
+			if ($this->Member->LoadFromDatabase() == false ||
+				$this->Member->Settings['can_log_in'] == false)
+			{
+				$this->Member = null;
+			}
+		}
+		
+		// Otherwise login as a guest.
+		if ($this->Member == null)
+		{
+			$this->Member = new Member($this, $this->Settings->DatabaseSettings['visitor_member_id']);
+			if ($this->Member->LoadFromDatabase() == false)
+			{
+				$this->Logger->InternalError("Database entry for visitor_member_id points to non-existant member (database possibly corrupt?).");
+			}
+		}
+		
+		// Perform security check.
+		$this->SessionSecurityCheck();
+		
+		// Add session variable to templating system.		
+		$this->TwigEnvironment->addGlobal("SESSION_ID", $this->SessionID);
+		
+		session_write_close();
+	}
+	
+	// -------------------------------------------------------------
+	//	Basically this checks if we are accepting any POST/GET/FIlES
+	//	variables, if we are, then it makes sure we have recieved
+	//	the correct session id with said variables.
+	//
+	//	This makes sure people can't create a fake form on another
+	//	site that submits, say, management requests to our site and
+	// 	tricking a member into using the form.
+	// -------------------------------------------------------------
+	public function SessionSecurityCheck()
+	{
+		if (count($_GET) > 0 || count($_POST) > 0 || count($_FILES) > 0)
+		{
+			if (isset($this->Settings->RequestValues['SESSION']) == false ||
+				$this->Settings->RequestValues['SESSION'] != $this->SessionID)
+			{
+				$this->Logger->InternalError("Session ID security check failed.<br/>
+				The action you attempted to perform has been rejected.<br/>
+				If this action was intentional, please try again.");
+			}			
+		}		
+	}	
+	
+	// -------------------------------------------------------------
+	//	Checks if a user can perform the given permission on the 
+	//	given board.
+	// -------------------------------------------------------------
+	public function IsAllowedTo($action, $board_id = -1)
+	{
+		return $this->Member->IsAllowedTo($action, $board_id);
+	}	
+	
+	// -------------------------------------------------------------
+	//	Returns true if the user is logged in.
+	// -------------------------------------------------------------
+	public function IsLoggedIn()
+	{
+		return ($this->Member->IsVisitor == false);
+	}	
+	
+	// -------------------------------------------------------------
+	//	Returns true if the user is logged in.
+	// -------------------------------------------------------------
+	public function LoginAsMember($id)
+	{
+		session_start();
+		$_SESSION['member_id'] = $id;
+		session_write_close();
+		
+		$this->LoadLoginState();
+	}	
+	
+	// -------------------------------------------------------------
+	//	Logs the user out.
+	// -------------------------------------------------------------
+	public function Logout()
+	{
+		session_start();
+		unset($_SESSION['member_id']);
+		session_write_close();
+		
+		$this->LoadLoginState();
+	}		
+	
+	// -------------------------------------------------------------
+	//	Returns information for the board located at the given uri.
+	// -------------------------------------------------------------
+	public function GetBoardByUri($uri)
+	{
+		foreach ($this->Settings->PageSettings['boards'] as $board)
+		{
+			if ($board['url'] == $uri)
+			{
+				return $board;
+			}
+		}
+		return null;
+	}
+	
+	// -------------------------------------------------------------
 	//  Core function, takes the users requests and does what is
 	//	neccessary to fulfill it.
 	//
@@ -299,6 +423,7 @@ class Engine
 		// Load all information we need from database.
 		$this->LoadDatabaseSettings();
 		$this->LoadBoardInformation();
+		$this->LoadLoginState();
 		
 		// Invoke the intitial event.
 		HookProvider::InvokeEvent("OnPostDatabaseConnection");
@@ -309,6 +434,7 @@ class Engine
 		// Override page handler.
 		$this->RenderingPage = true;
 		
+		// Find the handler we want to use.
 		$handler = $override_handler;
 		if ($handler == null)
 		{

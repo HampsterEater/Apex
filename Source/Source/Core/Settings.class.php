@@ -103,7 +103,16 @@ class Settings
 											// Page handlers.
 											"Source/Extensions/PageHandlers/Errors/Error404PageHandler.class.php",
 											"Source/Extensions/PageHandlers/Errors/Error500PageHandler.class.php",
+											
+											"Source/Extensions/PageHandlers/Manage/ManageHomePageHandler.class.php",
+											"Source/Extensions/PageHandlers/Manage/ManageLoginPageHandler.class.php",
+											"Source/Extensions/PageHandlers/Manage/ManageLogoutPageHandler.class.php",
+											"Source/Extensions/PageHandlers/Manage/ManageChangePasswordPageHandler.class.php",
+											"Source/Extensions/PageHandlers/Manage/ManageResetPasswordPageHandler.class.php",
+											"Source/Extensions/PageHandlers/Manage/ManageResetPasswordConfirmPageHandler.class.php",
+											
 											"Source/Extensions/PageHandlers/HomePageHandler.class.php",
+											"Source/Extensions/PageHandlers/BoardIndexPageHandler.class.php",
 										);	
 										
 	// Cache settings, some of these settings may or may not

@@ -1,0 +1,83 @@
+{% extends "Base.tmpl" %}
+
+{% block title %}{{ Settings.DatabaseSettings['site_name'] }} - /{{ board.url }}/{% endblock %}
+
+{% block javascript_imports %}
+<script type="text/javascript" src="{{ THEME_DIR_URI }}JavaScript/BoardIndex.js"></script>
+{% endblock %}
+
+{% block page_title %}
+<div id="small_title_container">
+	<div id="small_title">/{{ board.url }}/ - {{ board.name }}</div>
+	<div id="small_subtitle">{{ board.description }}</div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="HorizontalBreak"></div>
+
+	<div id="post_container">
+	{% if board.is_locked == true %}
+		<div id="error_message_text_small">{{ LANG("BOARD_INDEX_LOCKED") }}</div>
+	{% else %}
+		<form enctype="multipart/form-data" action="{{ BASE_SCRIPT_URI }}{{ board.url }}/post/" method="POST" name="replyform" id="replyform">
+
+			<input type="hidden" name="topicid" id="topicid" value="0"/>
+			<input type="hidden" name="editid" id="editid" value="0" />
+	
+			<table cellspacing="2px" cellpadding="0px" id="postbox">	
+				{% if board.is_forced_anonymous == false %}
+					<tr>
+						<td class="postblock">Name</td>
+						<td><input type="text" name="name" id="name" size="28" value="{user.postName}"/></td>
+					</tr>
+					<tr>
+						<td class="PostBlock">Email</td>
+						<td><input type="text" name="email" id="email" size="28"  value="{user.postEmail}"/></td>
+					</tr>
+				{% endif %}		
+				<tr>
+					<td class="PostBlock">Subject</td>
+					<td><input type="text" name="subject" id="subject" size="35" value="{user.postSubject}"/> <input type="submit" value="Submit"/> <span id="formSubmitInfo" style="font-size: 75%;"></span></td>
+				</tr>
+				<tr>
+					<td class="PostBlock">Comment</td>
+					<td><textarea id="comment" name="comment" cols="48" rows="4"></textarea></td>
+				</tr>
+				<tr>
+					<td class="PostBlock">Captcha</td>
+					<td><br/><br/><br/><br/></td>
+				</tr>
+				<tr>
+					<td class="PostBlock">Files</td>
+					<td><br/><br/><br/><br/></td>
+				</tr>
+				<tr>
+					<td class="PostBlock">Password</td> 
+					<td><input name="password" type="password" size="8" value="{user.postPassword}"/> (for post and file deletion)</td>
+				</tr>
+				<tr>
+					<td class="PostBlock">Extra</td> 
+					<td>[ <input type="checkbox" name="is_spoiler" id="isSpoiler" /> Is Spoiler ]</td>
+				</tr>			
+				<tr>
+					<td colspan="2" id="postbox_rules">
+						<ul>
+							<li>Supported file types are: {{ board.allowed_upload_extensions }}</li>
+							<li>Maximum file size allowed is {{ board.max_file_size }}.</li>
+						</ul>
+					</td>
+				</tr>		
+			</table>
+		
+		</form>
+	{% endif %}
+	</div>
+	
+<div class="HorizontalBreak"></div>
+	Posts
+
+<div class="HorizontalBreak"></div>
+	Page Index
+
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "Base.tmpl" %}
+
+{% block title %}{{ Settings.DatabaseSettings['site_name'] }} - {{ LANG("MANAGE_TITLE") }}{% endblock %}
+
+{% block content %}
+<div class="HorizontalBreak"></div>
+<br/>
+
+<div class="management_nav_container">
+
+	<div class="management_nav_category">
+		Account
+	</div>
+	<div class="management_nav_links">
+		<a href="{{ BASE_SCRIPT_URI }}manage/changepassword">Change Password</a>
+		<a href="{{ BASE_SCRIPT_URI }}manage/logout">Log Out</a>
+	</div>
+	
+	<div class="management_nav_category">
+		Administration
+	</div>
+	<div class="management_nav_links">
+		<a href="#">Overview</a>
+		<a href="#">Modify Settings</a>
+		<a href="#">Modify Boards</a>
+		<a href="#">Modify News</a>
+		<a href="#">Modify Filters</a>
+		<a href="#">Modify Members</a>
+		<a href="#">File Manager</a>
+	</div>
+
+	<div class="management_nav_category">
+		Moderation
+	</div>
+	<div class="management_nav_links">
+		<a href="#">Modify Bans</a>
+		<a href="#">View Ban Appeals</a>
+		<a href="#">View Deleted Posts</a>
+		<a href="#">View Reported Posts</a>
+		<a href="#">View Recent Posts</a>
+		<a href="#">View Logs</a>
+	</div>
+
+</div>
+
+<div class="management_container">
+	{% block management_content %}
+	{% endblock %}
+</div>
+
+<br/>
+<div class="HorizontalBreak"></div>
+{% endblock %}

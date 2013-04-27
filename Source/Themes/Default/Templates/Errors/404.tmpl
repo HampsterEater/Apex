@@ -1,6 +1,6 @@
-{% extends "base.tmpl" %}
+{% extends "Base.tmpl" %}
 
-{% block title %}{{ LANG("404_ERROR_TITLE") }}{% endblock %}
+{% block title %}{{ Settings.DatabaseSettings['site_name'] }} - {{ LANG("404_ERROR_TITLE") }}{% endblock %}
 
 {% block content %}
 <div class="HorizontalBreak"></div>
