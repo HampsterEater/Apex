@@ -103,12 +103,15 @@ class Engine
 		// Use mobile site if user has a mobile user-agent.
 		$this->Settings->UseMobileSite = $this->Settings->UserAgentValues['is_mobile'];
 		
-		// Set timezone.
-		date_default_timezone_set($this->Settings->TimeZone);
-	
 		// Load request variables.
 		$this->InitRequestVariables();
 
+		// Load preferences.
+		$this->LoadPreferences();
+
+		// Set timezone.
+		date_default_timezone_set($this->Settings->TimeZone);
+	
 		// Instantiate a new cache provider.
 		$this->Cache = CacheProvider::CreateProvider($this, $this->Settings->CacheProvider);
 	
@@ -166,10 +169,72 @@ class Engine
 		$this->Settings->RequestValues["cookies"] = array();
 		foreach ($_COOKIE as $key => $value)
 		{
-			$cleaned_value = StringHelper::CleanRequestVariable($value);
-			
-			$this->Settings->RequestValues["cookies"][$key] = $cleaned_value;
-		}		
+			if ($key == $this->Settings->CookieName)
+			{
+				$cleaned_value = @json_decode(StringHelper::CleanRequestVariable($value));		
+				foreach ($cleaned_value as $vk => $vv)
+				{
+					$this->Settings->RequestValues["cookies"][$vk] = $vv;
+				}				 
+			}
+		}				
+	}
+	
+	// -------------------------------------------------------------
+	//	Loads the users preferences.
+	// -------------------------------------------------------------
+	public function LoadPreferences()
+	{
+		// User preferences not set? Set defaults then.
+		if (!isset($this->Settings->RequestValues["cookies"]['theme']) ||
+			!isset($this->Settings->RequestValues["cookies"]['timezone']) ||
+			!isset($this->Settings->RequestValues["cookies"]['use_mobile']) ||
+			!isset($this->Settings->RequestValues["cookies"]['language']))
+		{
+			$this->Settings->RequestValues["cookies"]['theme'] 		= $this->Settings->Theme;
+			$this->Settings->RequestValues["cookies"]['timezone'] 	= $this->Settings->TimeZone;
+			$this->Settings->RequestValues["cookies"]['use_mobile'] = $this->Settings->UseMobileSite;
+			$this->Settings->RequestValues["cookies"]['language'] 	= $this->Settings->LanguageName;
+			$this->StoreCookieSettings();
+		}
+
+		// Load user specified theme?
+		if (isset($this->Settings->RequestValues["cookies"]['theme']))
+		{
+			$this->Settings->Theme 	   = StringHelper::RemovePathElements($this->Settings->RequestValues["cookies"]['theme']);
+			$this->Settings->ThemePath = $this->Settings->ThemeDirectory . $this->Settings->Theme . '/';
+		}
+		
+		// Load timezone.
+		if (isset($this->Settings->RequestValues["cookies"]['theme']))
+		{
+			$this->Settings->TimeZone = $this->Settings->RequestValues["cookies"]['timezone'];
+		}
+		
+		// Load language.
+		if (isset($this->Settings->RequestValues["cookies"]['language']))
+		{
+			$this->Settings->LanguageName = $this->Settings->RequestValues["cookies"]['language'];
+		}
+		
+		// Load mobile.
+		if (isset($this->Settings->RequestValues["cookies"]['use_mobile']))
+		{
+			$this->Settings->UseMobileSite = $this->Settings->RequestValues["cookies"]['use_mobile'];
+		}
+	}
+	
+	// -------------------------------------------------------------
+	//	Stores any changed cookie settings.
+	// -------------------------------------------------------------
+	public function StoreCookieSettings()
+	{
+		$name = $this->Settings->CookieName;
+		$val  = json_encode($this->Settings->RequestValues["cookies"]);
+		
+		setcookie($name, $val, time() + 60 * 60 * 24 * 365, '/');
+		
+		$this->LoadPreferences();
 	}
 	
 	// -------------------------------------------------------------

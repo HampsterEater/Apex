@@ -66,10 +66,13 @@ class Member
 
 		for ($i = 0; $i < count($this->Usergroups); $i++)
 		{
-			$this->Usergroups[$i]['permissions'] = explode(",", $this->Usergroups[$i]['permissions']);
-			$this->Usergroups[$i]['boards'] 	 = array_map('intval', explode(",", $this->Usergroups[$i]['boards']));
+			$this->Usergroups[$i]['permissions'] 			= explode(",", $this->Usergroups[$i]['permissions']);
+			$this->Usergroups[$i]['has_all_permissions'] 	= in_array("all", $this->Usergroups[$i]['permissions']);
+
+			$this->Usergroups[$i]['has_all_boards']	  		= ($this->Usergroups[$i]['boards'] == "all");			
+			$this->Usergroups[$i]['boards'] 	 			= array_map('intval', explode(",", $this->Usergroups[$i]['boards']));
 		}
-		
+		 
 		return true;
 	}
 	
@@ -87,9 +90,17 @@ class Member
 		foreach ($this->Usergroups as $usergroup)
 		{			
 			// Is usergroup valid on this board?
-			if ($board != -1 && in_array($board, $usergroup['boards']) == false)
+			if ($board != -1 && 
+				in_array($board, $usergroup['boards']) == false &&
+				$usergroup['has_all_boards'] == false)
 			{
 				continue;
+			}
+			
+			// God mode?
+			if ($usergroup['has_all_permissions'] == true)
+			{
+				return true;
 			}
 			
 			// Go through all permissions in usergroup.

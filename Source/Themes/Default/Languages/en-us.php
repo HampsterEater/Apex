@@ -37,6 +37,8 @@ $LANG['GENERATION_STRING'] 	= "Generated in %dms with %d query(s) at %s";
 //	Generic.
 // -------------------------------------------------------------
 $LANG['GO_BACK_LINK']	   	= "Go Back";
+$LANG['SUBMIT']	   			= "Submit";
+$LANG['APPLY_CHANGES']	 	= "Apply Changes";
 
 // -------------------------------------------------------------
 //	Board Index.
@@ -75,8 +77,53 @@ If you didn't request this reset, please ignore this email.
 From,
 The %s Team
 ";
-$LANG['RESET_PASSWORD_SUBJECT']		= "%s Password Reset";
-$LANG['RESET_PASSWORD_SENDER_EMAIL']= "noreply@%s";
+$LANG['RESET_PASSWORD_SUBJECT']			= "%s Password Reset";
+$LANG['RESET_PASSWORD_SENDER_EMAIL']	= "noreply@%s";
+$LANG['MANAGE_MENU_ACCOUNT']			= "Account";
+$LANG['MANAGE_MENU_CHANGE_PASSWORD']	= "Change Password";
+$LANG['MANAGE_MENU_LOG_OUT']			= "Log Out";
+$LANG['MANAGE_MENU_ADMINISTRATION']		= "Administration";
+$LANG['MANAGE_MENU_OVERVIEW']			= "Overview";
+$LANG['MANAGE_MENU_MANAGE_SETTINGS']	= "Manage Settings";
+$LANG['MANAGE_MENU_MANAGE_BOARDS']		= "Manage Boards";
+$LANG['MANAGE_MENU_MANAGE_NEWS']		= "Manage News";
+$LANG['MANAGE_MENU_MANAGE_FILTERS']		= "Manage Filters";
+$LANG['MANAGE_MENU_MANAGE_THEMES']		= "Manage Themes";
+$LANG['MANAGE_MENU_MANAGE_MEMBERS']		= "Manage Members";
+$LANG['MANAGE_MENU_FILE_MANAGER']		= "File Manager";
+$LANG['MANAGE_MENU_MODERATION']			= "Moderation";
+$LANG['MANAGE_MENU_MANAGE_BANS']		= "Manage Bans";
+$LANG['MANAGE_MENU_VIEW_BAN_APPEALS']	= "View Ban Appeals";
+$LANG['MANAGE_MENU_VIEW_DELETED_POSTS']	= "View Deleted Posts";
+$LANG['MANAGE_MENU_VIEW_REPORTED_POSTS']= "View Reported Posts";
+$LANG['MANAGE_MENU_VIEW_RECENT_POSTS']	= "View Recent Posts";
+$LANG['MANAGE_MENU_VIEW_LOGS']			= "View Logs";
+
+// -------------------------------------------------------------
+//	Preferences page.
+// -------------------------------------------------------------
+$LANG['PREFERENCES']							= "Preferences";
+$LANG['PREFERENCES_DESCRIPTION']				= "Configure your personal settings.";
+$LANG['PREFERENCES_MOBILE_SITE_TITLE']			= "Use Mobile Site?";
+$LANG['PREFERENCES_MOBILE_SITE_DESCRIPTION']	= "If enabled the site will be rendered in a layout designed for small touch screen devices.";
+$LANG['PREFERENCES_THEME_TITLE']				= "Choose Theme";
+$LANG['PREFERENCES_THEME_DESCRIPTION']			= "Different themes render the site differently. Try them out and see what you like!";
+$LANG['PREFERENCES_LANGUAGE_TITLE']				= "Choose Language";
+$LANG['PREFERENCES_LANGUAGE_DESCRIPTION']		= "Allows you to localize the template text into different languages.";
+$LANG['PREFERENCES_TIMEZONE_TITLE']				= "Choose TimeZone";
+$LANG['PREFERENCES_TIMEZONE_DESCRIPTION']		= "Selecting different time-zones will change how dates and times are displayed throughout the site.";
+
+// -------------------------------------------------------------
+//	Home page.
+// -------------------------------------------------------------
+$LANG['MANAGEMENT_PANEL_HOME_TITLE']		= "Management Panel";
+$LANG['MANAGEMENT_PANEL_HOME_DESCRIPTION']	= "Welcome to the management panel.<br/>
+<br/>
+From here you can configure different aspects of this software, by following the links available on the left.<br/>
+<br/>
+If you are not an administrator you will likely only have limited access to this panel, enough to do your job only.<br/>";
+$LANG['MANAGEMENT_PANEL_HOME_STATISTICS']	= "Statistics";
+$LANG['MANAGEMENT_PANEL_HOME_GRAPHS']		= "Graphs";
 
 // -------------------------------------------------------------
 //	404 Not Found.

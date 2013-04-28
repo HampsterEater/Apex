@@ -1,0 +1,116 @@
+{% extends "Base.tmpl" %}
+
+{% block title %}{{ Settings.DatabaseSettings['site_name'] }} - {{ LANG("PREFERENCES") }}{% endblock %}
+
+{% block javascript_imports %}
+{% endblock %}
+
+{% block page_title %}
+<div id="small_title_container">
+	<div id="small_title">{{ LANG("PREFERENCES") }}</div>
+	<div id="small_subtitle">{{ LANG("PREFERENCES_DESCRIPTION") }}</div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="HorizontalBreak"></div>
+<br/><br/>
+
+<form enctype="multipart/form-data" action="{{ BASE_SCRIPT_URI }}preferences/" method="POST" name="prefform" id="prefform">
+
+	<input type="hidden" name="SESSION" id="SESSION" value="{{ SESSION_ID }}"/>
+
+	<div class="management_box_center">
+		<table style="width:100%;" cellspacing="0px" cellpadding="0px">
+			<tr>
+				<td>
+					<h1>{{ LANG("PREFERENCES_MOBILE_SITE_TITLE") }}</h1>
+				</td>
+				<td style="text-align: right; padding-right: 10px; padding-bottom: 10px;">
+					{% if Settings.UseMobileSite == true %}
+						<input name="use_mobile" type="checkbox" checked/>
+					{% else %}
+						<input name="use_mobile" type="checkbox"/>
+					{% endif %}
+				</td>
+			</tr>
+		</table>
+		{{ LANG("PREFERENCES_MOBILE_SITE_DESCRIPTION")|raw }}
+	</div>
+
+	<div class="management_box_center">
+		<table style="width:100%;" cellspacing="0px" cellpadding="0px">
+			<tr>
+				<td>
+					<h1>{{ LANG("PREFERENCES_THEME_TITLE") }}</h1>
+				</td>
+				<td style="text-align: right; padding-right: 10px; padding-bottom: 10px;">
+					<select name="theme" style="width: 200px;">
+						{% for theme in themes %}
+							{% if theme == Settings.Theme %}
+								<option value="{{ theme.directory_name }}" selected>{{ theme.name }}</option>
+							{% else %}
+								<option value="{{ theme.directory_name }}">{{ theme.name }}</option>						
+							{% endif %}
+						{% endfor %}
+					</select>
+				</td>
+			</tr>
+		</table>
+		{{ LANG("PREFERENCES_THEME_DESCRIPTION")|raw }}
+	</div>
+
+	<div class="management_box_center">
+		<table style="width:100%;" cellspacing="0px" cellpadding="0px">
+			<tr>
+				<td>
+					<h1>{{ LANG("PREFERENCES_LANGUAGE_TITLE") }}</h1>
+				</td>
+				<td style="text-align: right; padding-right: 10px; padding-bottom: 10px;">
+					<select name="language" style="width: 200px;">
+						{% for language in languages %}
+							{% if language == Settings.LanguageName %}
+								<option value="{{ language.locale_name }}" selected>{{ language.name }}</option>
+							{% else %}
+								<option value="{{ language.locale_name }}">{{ language.name }}</option>
+							{% endif %}
+						{% endfor %}
+					</select>
+				</td>
+			</tr>
+		</table>
+		{{ LANG("PREFERENCES_LANGUAGE_DESCRIPTION")|raw }}
+	</div>
+
+	<div class="management_box_center">
+		<table style="width:100%;" cellspacing="0px" cellpadding="0px">
+			<tr>
+				<td>
+					<h1>{{ LANG("PREFERENCES_TIMEZONE_TITLE") }}</h1>
+				</td>
+				<td style="text-align: right; padding-right: 10px; padding-bottom: 10px;">
+					<select name="timezone" style="width: 200px;">
+						{% for timezone in timezones %}
+							{% if timezone == Settings.TimeZone %}
+								<option value="{{ timezone }}" selected>{{ timezone }}</option>
+							{% else %}
+								<option value="{{ timezone }}">{{ timezone }}</option>						
+							{% endif %}
+						{% endfor %}
+					</select>
+				</td>
+			</tr>
+		</table>
+		{{ LANG("PREFERENCES_TIMEZONE_DESCRIPTION")|raw }}
+	</div>
+
+	<center>
+		<input type="submit" value="{{ LANG("APPLY_CHANGES") }}"/>
+		<br/><br/>
+	</center>
+	
+</form>
+	
+<br/>
+<div class="HorizontalBreak"></div>
+{% endblock %}

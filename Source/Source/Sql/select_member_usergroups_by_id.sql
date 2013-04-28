@@ -1,5 +1,5 @@
 SELECT 
-	* 
+	*
 FROM 
 	usergroups AS a
 WHERE 

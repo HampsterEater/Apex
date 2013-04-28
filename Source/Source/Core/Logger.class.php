@@ -108,4 +108,35 @@ class Logger
 							 $content);
 	}
 	
+	// -------------------------------------------------------------
+	//  Writes a log into the database if we are connected.
+	//
+	//	@param content Error message description.
+	// -------------------------------------------------------------
+	public function Log($content, $source = "")
+	{
+		if ($source == "")
+		{	
+			if ($this->m_engine->Member != NULL)
+			{
+				$source = $this->m_engine->Member->Settings['username'];			
+			}
+			else
+			{
+				$source = "Not Logged In";
+			}
+		}
+	
+		$db = $this->m_engine->Database;
+		if ($db != null && $db->IsConnected())
+		{
+			$db->Query("insert_log", array(
+				":message" 		=> $content,
+				":source" 		=> $source,
+				":create_ip" 	=> $_SERVER['REMOTE_ADDR'],
+				":create_time" 	=> time(),
+			));
+		}
+	}
+	
 }

@@ -40,6 +40,14 @@ class MySQLDatabaseProvider extends DatabaseProvider
 	}
 	
 	// -------------------------------------------------------------
+	//	Returns true if connected.
+	// -------------------------------------------------------------
+	public function IsConnected()
+	{
+		return ($this->m_connection != null);
+	}
+	
+	// -------------------------------------------------------------
 	//  Constructs this class.
 	//
 	//	@param engine Instance of engine that constructed this

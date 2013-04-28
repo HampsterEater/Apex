@@ -4,14 +4,13 @@
 
 {% block management_content %}
 	<div class="management_box">
-		<h1>Management Panel</h1>
-		Herp
-		Herp
-		Herp<br/>
-		Herp<br/>
-		Herp<br/>
-		Herp<br/>
-		Herp<br/>
-		Herp<br/>
+		<h1>{{ LANG("MANAGEMENT_PANEL_HOME_TITLE") }}</h1>
+		{{ LANG("MANAGEMENT_PANEL_HOME_DESCRIPTION")|raw }}
+	</div>
+	<div class="management_box">
+		<h2>{{ LANG("MANAGEMENT_PANEL_HOME_STATISTICS") }}</h2>
+	</div>
+	<div class="management_box">
+		<h2>{{ LANG("MANAGEMENT_PANEL_HOME_GRAPHS") }}</h2>
 	</div>
 {% endblock %}

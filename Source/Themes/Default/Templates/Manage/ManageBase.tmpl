@@ -9,36 +9,37 @@
 <div class="management_nav_container">
 
 	<div class="management_nav_category">
-		Account
+		{{ LANG('MANAGE_MENU_ACCOUNT') }}
 	</div>
 	<div class="management_nav_links">
-		<a href="{{ BASE_SCRIPT_URI }}manage/changepassword">Change Password</a>
-		<a href="{{ BASE_SCRIPT_URI }}manage/logout">Log Out</a>
+		<a href="{{ BASE_SCRIPT_URI }}manage/changepassword">{{ LANG('MANAGE_MENU_CHANGE_PASSWORD') }}</a>
+		<a href="{{ BASE_SCRIPT_URI }}manage/logout">{{ LANG('MANAGE_MENU_LOG_OUT') }}</a>
 	</div>
 	
 	<div class="management_nav_category">
-		Administration
+		{{ LANG('MANAGE_MENU_ADMINISTRATION') }}
 	</div>
 	<div class="management_nav_links">
-		<a href="#">Overview</a>
-		<a href="#">Modify Settings</a>
-		<a href="#">Modify Boards</a>
-		<a href="#">Modify News</a>
-		<a href="#">Modify Filters</a>
-		<a href="#">Modify Members</a>
-		<a href="#">File Manager</a>
+		<a href="{{ BASE_SCRIPT_URI }}manage">{{ LANG('MANAGE_MENU_OVERVIEW') }}</a>
+		<a href="{{ BASE_SCRIPT_URI }}manage/settings">{{ LANG('MANAGE_MENU_MANAGE_SETTINGS') }}</a>
+		<a href="{{ BASE_SCRIPT_URI }}manage/boards">{{ LANG('MANAGE_MENU_MANAGE_BOARDS') }}</a>
+		<a href="{{ BASE_SCRIPT_URI }}manage/news">{{ LANG('MANAGE_MENU_MANAGE_NEWS') }}</a>
+		<a href="{{ BASE_SCRIPT_URI }}manage/filters">{{ LANG('MANAGE_MENU_MANAGE_FILTERS') }}</a>
+		<a href="{{ BASE_SCRIPT_URI }}manage/themes">{{ LANG('MANAGE_MENU_MANAGE_THEMES') }}</a>
+		<a href="{{ BASE_SCRIPT_URI }}manage/members">{{ LANG('MANAGE_MENU_MANAGE_MEMBERS') }}</a>
+		<a href="{{ BASE_SCRIPT_URI }}manage/files">{{ LANG('MANAGE_MENU_FILE_MANAGER') }}</a>
 	</div>
 
 	<div class="management_nav_category">
-		Moderation
+		{{ LANG('MANAGE_MENU_MODERATION') }}
 	</div>
 	<div class="management_nav_links">
-		<a href="#">Modify Bans</a>
-		<a href="#">View Ban Appeals</a>
-		<a href="#">View Deleted Posts</a>
-		<a href="#">View Reported Posts</a>
-		<a href="#">View Recent Posts</a>
-		<a href="#">View Logs</a>
+		<a href="{{ BASE_SCRIPT_URI }}manage/bans">{{ LANG('MANAGE_MENU_MANAGE_BANS') }}</a>
+		<a href="{{ BASE_SCRIPT_URI }}manage/banappeals">{{ LANG('MANAGE_MENU_VIEW_BAN_APPEALS') }}</a>
+		<a href="{{ BASE_SCRIPT_URI }}manage/deletedposts">{{ LANG('MANAGE_MENU_VIEW_DELETED_POSTS') }}</a>
+		<a href="{{ BASE_SCRIPT_URI }}manage/reportedposts">{{ LANG('MANAGE_MENU_VIEW_REPORTED_POSTS') }}</a>
+		<a href="{{ BASE_SCRIPT_URI }}manage/recentposts">{{ LANG('MANAGE_MENU_VIEW_RECENT_POSTS') }}</a>
+		<a href="{{ BASE_SCRIPT_URI }}manage/logs">{{ LANG('MANAGE_MENU_VIEW_LOGS') }}</a>
 	</div>
 
 </div>

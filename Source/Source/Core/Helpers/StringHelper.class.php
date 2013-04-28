@@ -44,6 +44,23 @@ class StringHelper
 	}
 	
 	// -------------------------------------------------------------
+	//	Removes all path elements from a string. / \ .. . and %
+	//
+	//	@param path Value to have elements removed from.
+	//
+	//	@returns Cleaned up version of $path.
+	// -------------------------------------------------------------
+	public static function RemovePathElements($path)
+	{
+		$path = str_replace("\\", "", $path);
+		$path = str_replace("/", "", $path);
+		$path = str_replace("..", "", $path);
+		$path = str_replace(".", "", $path);
+		$path = str_replace("%", "", $path);
+		return $path;
+	}
+	
+	// -------------------------------------------------------------
 	//	Formats a user-entered string. This function deals with 
 	//	santizing a string for output to a browser and also parses
 	//	bbcode.

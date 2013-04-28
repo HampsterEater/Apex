@@ -68,6 +68,9 @@ class Settings
 	//	These settings are static so change to whatever you want.
 	// -------------------------------------------------------------
 	
+	// Cookie settings.
+	public $CookieName				= "apex";
+	
 	// Template settings.
 	public $TemplateCacheDirectory	= "Cache/Templates/";
 	public $TemplateAutoReload		= true;
@@ -113,6 +116,7 @@ class Settings
 											
 											"Source/Extensions/PageHandlers/HomePageHandler.class.php",
 											"Source/Extensions/PageHandlers/BoardIndexPageHandler.class.php",
+											"Source/Extensions/PageHandlers/PreferencesPageHandler.class.php",
 										);	
 										
 	// Cache settings, some of these settings may or may not

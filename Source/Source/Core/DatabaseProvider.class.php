@@ -40,6 +40,11 @@ abstract class DatabaseProvider
 	//	instantiated and used.
 	// -------------------------------------------------------------
 	abstract public function IsSupported();
+		
+	// -------------------------------------------------------------
+	//	Returns true if connected.
+	// -------------------------------------------------------------
+	abstract public function IsConnected();
 	
 	// -------------------------------------------------------------
 	//  Constructs this class.

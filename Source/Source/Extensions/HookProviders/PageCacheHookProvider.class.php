@@ -61,6 +61,13 @@ class PageCacheHookProvider extends HookProvider
 			return false;
 		}
 		
+		// Do not cache any of the management pages.
+		if (count($settings->URIArguments) > 0 &&
+			$settings->URIArguments[0] == "manage")
+		{
+			return false;
+		}
+		
 		return true;
 	}
 	
