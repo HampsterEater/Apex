@@ -1,3 +1,13 @@
-RSS
-mobile
-normal
+RSS Feed On Boards/Threads
+Mobile Templates
+Localize Error/Internal Message
+Custom board templates
+bans / hell bans
+filter bans
+must-be-logged-in boards?
+registration of accounts/usenrames?
+Make sure you can't post to topics not shown on our board (kinda important!)
+cache file types when page is loaded
+image hash bans
+when deleting cache on new posts, only delete cache of board index page the topic/reply will show on
+refactor the shit out the the post handler.

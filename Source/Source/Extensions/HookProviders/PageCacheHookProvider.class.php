@@ -61,9 +61,12 @@ class PageCacheHookProvider extends HookProvider
 			return false;
 		}
 		
-		// Do not cache any of the management pages.
+		// Do not cache any of the management/preferences pages.
 		if (count($settings->URIArguments) > 0 &&
-			$settings->URIArguments[0] == "manage")
+			(	
+				$settings->URIArguments[0] == "manage" ||
+				$settings->URIArguments[0] == "preferences" ||
+			))
 		{
 			return false;
 		}
@@ -79,15 +82,19 @@ class PageCacheHookProvider extends HookProvider
 	{
 		$settings = $this->m_engine->Settings;
 	
-		// Use URI arguments as base for key.
-		$key = implode("/", $settings->URIArguments);
-	
 		// Use preference as part of the key as well.
-		$key .= "?mobile=" 		. ($settings->UseMobileSite ? "1" : "0");
-		$key .= "&theme=" 		. ($settings->Theme);
-		$key .= "&language=" 	. ($settings->LanguageName);
-		$key .= "&timezone=" 	. ($settings->TimeZone);		
+		$key = "";
+		$key .= "mobile=" 		. ($settings->UseMobileSite ? "1" : "0");
+		$key .= "#theme=" 		. ($settings->Theme);
+		$key .= "#language=" 	. ($settings->LanguageName);
+		$key .= "#timezone=" 	. ($settings->TimeZone);		
 		
+		// Use URI arguments as base for key.
+		$key. = '#' . implode("/", $settings->URIArguments) . '/'; // We add the extra slash on the end as it makes
+																   // it simpler to create deletion-patterns when clearing cache.
+	
+		// mobile=0#theme=Default#/b/123
+	
 		return $key;
 	}
 	

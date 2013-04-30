@@ -2,7 +2,10 @@
 <html>
     <head>
         {% block head %}
-			<script type="text/javascript" src="{{ THEME_DIR_URI }}JavaScript/Libraries/jQuery.js"></script>
+			<script type="text/javascript">
+				var COOKIE_NAME = "{{ Settings.CookieName }}"; 
+			</script>
+			<script type="text/javascript" src="{{ THEME_DIR_URI }}JavaScript/Libraries/jQuery/jQuery.js"></script>
 			{% block javascript_imports %}
 			{% endblock %}
 			<link rel="shortcut icon" type="image/ico" href="{{ THEME_DIR_URI }}Images/favicon.ico" />			
@@ -36,7 +39,7 @@
 														<ul>
 															{% for board in boards %}
 																{% if board.hidden == 0 and board.category_id == category.id %}
-																	<a href="{{ BASE_URI_DIR ~ board.url }}/">{{ board.name }}</a>
+																	<a href="{{ BASE_SCRIPT_URI ~ board.url }}/">{{ board.name }}</a>
 																{% endif %}
 															{% endfor %}
 														</ul>
@@ -47,9 +50,11 @@
 									</div>
 								</td>
 								<td  id="menu_management_td">
-									<a href="{{ BASE_URI_DIR }}">{{ LANG("MENU_HOME") }}</a> -
-									<a href="{{ BASE_URI_DIR }}preferences/">{{ LANG("MENU_PREFERENCES") }}</a> -
-									<a href="{{ BASE_URI_DIR }}manage/">{{ LANG("MENU_MANAGE") }}</a>
+									{% block extra_management_links %}
+									{% endblock %}
+									<a href="{{ BASE_SCRIPT_URI }}">{{ LANG("MENU_HOME") }}</a> -
+									<a href="{{ BASE_SCRIPT_URI }}preferences/">{{ LANG("MENU_PREFERENCES") }}</a> -
+									<a href="{{ BASE_SCRIPT_URI }}manage/">{{ LANG("MENU_MANAGE") }}</a>
 								</td>							
 							</tr>
 						</table>

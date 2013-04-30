@@ -23,7 +23,9 @@ if (!defined("ENTRY_POINT"))
 //	system.
 // -------------------------------------------------------------
 class Member
-{
+{	
+	private static $g_allPermissions;
+
 	private $m_engine;
 
 	public $ID;
@@ -52,6 +54,13 @@ class Member
 	// -------------------------------------------------------------
 	public function LoadFromDatabase()
 	{
+		// Load all permissions/usergroups.
+		if (Member::$g_allPermissions == null)
+		{
+			$result = $this->m_engine->Database->Query("select_permissions");
+			Member::$g_allPermissions = $result->Rows;
+		}
+	
 		// Load member settings from database.		
 		$result = $this->m_engine->Database->Query("select_member_by_id", array(":id" => $this->ID));
 		if (count($result->Rows) != 1)
@@ -66,14 +75,55 @@ class Member
 
 		for ($i = 0; $i < count($this->Usergroups); $i++)
 		{
-			$this->Usergroups[$i]['permissions'] 			= explode(",", $this->Usergroups[$i]['permissions']);
-			$this->Usergroups[$i]['has_all_permissions'] 	= in_array("all", $this->Usergroups[$i]['permissions']);
-
-			$this->Usergroups[$i]['has_all_boards']	  		= ($this->Usergroups[$i]['boards'] == "all");			
-			$this->Usergroups[$i]['boards'] 	 			= array_map('intval', explode(",", $this->Usergroups[$i]['boards']));
+			// Are we given all permissions or just some?
+			if ($this->Usergroups[$i]['permission_ids'] == "all")
+			{
+				$this->Usergroups[$i]['permission_ids'] = array();
+				foreach (Member::$g_allPermissions as $permission)
+				{			
+					array_push($this->Usergroups[$i]['permission_ids'], $permission['id']);
+				}
+			}
+			else
+			{
+				$this->Usergroups[$i]['permission_ids'] = array_map('intval', explode(",", $this->Usergroups[$i]['permission_ids']));
+			}
+			
+			// Are we given all boards or just some?
+			if ($this->Usergroups[$i]['board_ids'] == "all")
+			{
+				$this->Usergroups[$i]['board_ids'] = array();
+				foreach ($this->m_engine->Settings->PageSettings['boards'] as $board)
+				{			
+					array_push($this->Usergroups[$i]['board_ids'], $board['id']);
+				}
+			}
+			else
+			{
+				$this->Usergroups[$i]['board_ids'] = array_map('intval', explode(",", $this->Usergroups[$i]['board_ids']));
+			}
 		}
 		 
 		return true;
+	}
+	
+	// -------------------------------------------------------------
+	//  Finds the numeric ID of a permission given its name.
+	//
+	//	@param	 action		Permission to check for.
+	//
+	//	@returns ID if one can be found, otherwise null.
+	// -------------------------------------------------------------
+	public function FindPermissionID($action)
+	{
+		foreach (Member::$g_allPermissions as $permission)
+		{			
+			if ($permission['name'] == $action)
+			{
+				return $permission['id'];
+			}
+		}
+		return 0;
 	}
 	
 	// -------------------------------------------------------------
@@ -87,26 +137,21 @@ class Member
 	// -------------------------------------------------------------
 	public function IsAllowedTo($action, $board = -1)
 	{
+		$action_id = $this->FindPermissionID($action);
+	
 		foreach ($this->Usergroups as $usergroup)
 		{			
 			// Is usergroup valid on this board?
 			if ($board != -1 && 
-				in_array($board, $usergroup['boards']) == false &&
-				$usergroup['has_all_boards'] == false)
+				in_array($board, $usergroup['board_ids']) == false)
 			{
 				continue;
 			}
 			
-			// God mode?
-			if ($usergroup['has_all_permissions'] == true)
-			{
-				return true;
-			}
-			
 			// Go through all permissions in usergroup.
-			foreach ($usergroup['permissions'] as $permission)
+			foreach ($usergroup['permission_ids'] as $permission)
 			{
-				if ($permission == $action)
+				if ($permission == $action_id)
 				{
 					return true;
 				}
@@ -115,5 +160,22 @@ class Member
 		
 		return false;
 	}
-	
+		
+	// -------------------------------------------------------------
+	//  Checks if the user has permission to to perform the given
+	//	action on the given board, if not it redirects to a 
+	//	permission error screen.
+	//
+	//	@param	 action		Permission to check for.
+	//	@param	 board		Board to check permission on.
+	//
+	//	@returns True if you can.
+	// -------------------------------------------------------------
+	public function AssertAllowedTo($action, $board = -1)
+	{
+		if (!$this->IsAllowedTo($action, $board))
+		{
+			$this->m_engine->Logger->PermissionDeniedError("You do not have permission to view this page.");
+		}
+	}
 }

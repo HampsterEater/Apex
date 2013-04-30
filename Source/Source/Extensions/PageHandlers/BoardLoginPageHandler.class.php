@@ -4,11 +4,11 @@
 //	Apex Imageboard Software
 //	Copyright (C) 2013 TwinDrills, All Rights Reserved
 // -------------------------------------------------------------
-//	File: 	manageloginpagehandler.class.php
+//	File: 	boardloginpagehandler.class.php
 //	Author: tim
 // -------------------------------------------------------------
-//	This file contains the page handler for the "login" page in 
-//	the management area.
+//	This file contains the code for showing the board login
+//	page for password protected boards.
 // -------------------------------------------------------------
 
 // Check we are not being accessed directly.
@@ -18,13 +18,13 @@ if (!defined("ENTRY_POINT"))
 }
 
 // -------------------------------------------------------------
-//	This class handles showing the "home" page in the 
-//	management area.
+//	This class handles showing board login page for password
+//	protected boards.
 //
 //	URI for this handler is:
-// 		/index.php/manage/login
+// 		/board-name/login
 // -------------------------------------------------------------
-class ManageLoginPageHandler extends PageHandler
+class BoardLoginPageHandler extends PageHandler
 {
 
 	// Engine that constructed this class.
@@ -46,10 +46,20 @@ class ManageLoginPageHandler extends PageHandler
 	public function CanHandleURI($uri_arguments)
 	{
 		if (count($uri_arguments) == 2 &&
-			$uri_arguments[0] == "manage" &&
 			$uri_arguments[1] == "login")
 		{
-			return true;
+			$board_name = $uri_arguments[0];
+		
+			// Check first argument is a board name.
+			foreach ($this->m_engine->Settings->PageSettings['boards'] as $board)
+			{
+				if ($board['url'] == $board_name)
+				{
+					return true;
+				}				
+			}
+			
+			return false;
 		}
 		
 		return false;
@@ -71,23 +81,40 @@ class ManageLoginPageHandler extends PageHandler
 	//	the current page.
 	// -------------------------------------------------------------
 	public function RenderPage($arguments = array())
-	{
-		// Check permissions.
-		$this->m_engine->Member->AssertAllowedTo("view_login_page");
-		
-		// Are we even logged in?
-		if ($this->m_engine->IsLoggedIn())
-		{
-			BrowserHelper::RedirectExit(BASE_SCRIPT_URI . 'manage');
-		}
-	
+	{		
 		$arguments = array_merge($arguments,
 			array
 			(
 				'error_type' => '',
 			)		
 		);	
-	
+		
+		// Check permissions.
+		$this->m_engine->Member->AssertAllowedTo("view_board_login_page");
+		
+		$uri_arguments			= $this->m_engine->Settings->URIArguments;
+		$board_uri  			= $uri_arguments[0];
+		$arguments['board'] 	= null;
+		
+		// Load board settings.
+		$arguments['board'] = $this->m_engine->GetBoardByUri($board_uri);
+		if ($arguments['board'] == null)
+		{
+			$this->m_engine->Logger->InternalError("Could not retrieve board information (for uri /{$board_uri}/) from database.");
+		}
+		
+		// Work out password cookie.
+		$cookie_password_key = 'board_' . ($arguments['board']['id']) . '_password';
+
+		// Does this board actually require a password?
+		if ($arguments['board']['password'] == "" ||
+			(isset($_SESSION[$cookie_password_key]) && $arguments['board']['password'] != $_SESSION[$cookie_password_key]) ||
+			$this->m_engine->Member->IsAllowedTo("bypass_passwords", $arguments['board']['id']))
+		{		
+			BrowserHelper::RedirectExit(BASE_SCRIPT_URI . $board_uri);
+			return;
+		}		
+
 		// Delete old expired failed login attempts.
 		$threshold 	 = $this->m_engine->Settings->DatabaseSettings['failed_login_threshold'];
 		$expire_time = $this->m_engine->Settings->DatabaseSettings['failed_login_expire_time'];
@@ -102,53 +129,29 @@ class ManageLoginPageHandler extends PageHandler
 	
 		// Have we submitted the form?
 		if ($arguments['error_type'] == '' &&
-			isset($this->m_engine->Settings->RequestValues['username']) &&
 			isset($this->m_engine->Settings->RequestValues['password']))
 		{
-			$username = trim($this->m_engine->Settings->RequestValues['username']);
 			$password = trim($this->m_engine->Settings->RequestValues['password']);
 
-			if ($username == "")
-			{
-				$arguments['error_type'] = 'no_username';
-				$this->m_engine->Logger->Log("Recieved attempt to login to account '{$username}' but provided no username.");
-			}
-			else if ($password == "")
+			if ($password == "")
 			{
 				$arguments['error_type'] = 'no_password';
-				$this->m_engine->Logger->Log("Recieved attempt to login to account '{$username}' but provided no password.");
+				$this->m_engine->Logger->Log("Recieved attempt to login to board '{$board_uri}' but provided no password.");
 			}
 			else 
 			{
-				$result = $this->m_engine->Database->Query("select_member_by_username", array(":username" => $username));
-				
-				if (count($result->Rows) != 1)
+				if ($password == $arguments['board']['password'])
 				{
-					$arguments['error_type'] = 'invalid_login';
-					$this->m_engine->Logger->Log("Recieved attempt to login to account '{$username}' but username dosen't exist.");
-				}	
+					session_start();
+					$_SESSION[$cookie_password_key] = $password;
+					session_write_close();
+		
+					BrowserHelper::RedirectExit(BASE_SCRIPT_URI . $board_uri);
+				}
 				else
 				{
-					$member = $result->Rows[0];
-					if ($member['can_log_in'] != true)
-					{
-						$arguments['error_type'] = 'account_disabled';
-						$this->m_engine->Logger->Log("Recieved attempt to login to account '{$username}' but account is disabled.");
-					}
-					else
-					{
-						$hashed = hash("sha512", $password . $member['password_salt']);
-						if ($hashed == $member['password'])
-						{
-							$this->m_engine->LoginAsMember($member['id']);
-							BrowserHelper::RedirectExit(BASE_SCRIPT_URI . "manage/");
-						}
-						else
-						{
-							$this->m_engine->Logger->Log("Recieved attempt to login to account '{$username}' with invalid password.");
-							$arguments['error_type'] = 'invalid_login';
-						}
-					}
+					$this->m_engine->Logger->Log("Recieved attempt to login to board '{$board_uri}' with invalid password.");
+					$arguments['error_type'] = 'invalid_login';
 				}
 			}
 		}
@@ -161,7 +164,7 @@ class ManageLoginPageHandler extends PageHandler
 		}
 		
 		// Render the template.
-		$this->m_engine->RenderTemplate("Manage/Login.tmpl", $arguments);
+		$this->m_engine->RenderTemplate("BoardLogin.tmpl", $arguments);
 	}
 	
 }

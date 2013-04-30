@@ -16,6 +16,14 @@
 <div class="HorizontalBreak"></div>
 <br/><br/>
 
+{% if success == true %}
+	<center>
+		<div id="success_message_text_small">	
+		{{ LANG("PREFERENCES_APPLIED_SUCCESSFULLY") }}
+		<br/><br/></div>
+	</center>
+{% endif %}
+
 <form enctype="multipart/form-data" action="{{ BASE_SCRIPT_URI }}preferences/" method="POST" name="prefform" id="prefform">
 
 	<input type="hidden" name="SESSION" id="SESSION" value="{{ SESSION_ID }}"/>

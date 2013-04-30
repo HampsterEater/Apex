@@ -23,9 +23,10 @@ $LANG['DATETIME_FORMAT'] 	= 'd/m/Y H:i:s';
 // -------------------------------------------------------------
 //	Header strings.
 // -------------------------------------------------------------
-$LANG['MENU_HOME']	   	   	= "Home";
-$LANG['MENU_PREFERENCES']  	= "Preferences";
-$LANG['MENU_MANAGE']	   	= "Manage";
+$LANG['MENU_HOME']	   	   		= "Home";
+$LANG['MENU_PREFERENCES']  		= "Preferences";
+$LANG['MENU_MANAGE']	   		= "Manage";
+$LANG['MENU_LOGOUT_OF_BOARD']	= "Log out of /%s/";
 
 // -------------------------------------------------------------
 //	Footer strings.
@@ -36,9 +37,27 @@ $LANG['GENERATION_STRING'] 	= "Generated in %dms with %d query(s) at %s";
 // -------------------------------------------------------------
 //	Generic.
 // -------------------------------------------------------------
-$LANG['GO_BACK_LINK']	   	= "Go Back";
-$LANG['SUBMIT']	   			= "Submit";
-$LANG['APPLY_CHANGES']	 	= "Apply Changes";
+$LANG['GO_BACK_LINK']	   					= "Go Back";
+$LANG['SUBMIT']	   							= "Submit";
+$LANG['APPLY_CHANGES']	 					= "Apply Changes";
+$LANG['POST_BOX_NAME']						= "Name";
+$LANG['POST_BOX_EMAIL']						= "Email";
+$LANG['POST_BOX_SUBJECT']					= "Subject";
+$LANG['POST_BOX_COMMENT']					= "Comment";
+$LANG['POST_BOX_VERIFICATION']				= "Verification";
+$LANG['POST_BOX_RECAPTCHA_PLACEHOLDER']		= "reCAPTCHA Challenge (Required)";
+$LANG['POST_BOX_FILE']						= "File %d";
+$LANG['POST_BOX_PASSWORD']					= "Password";
+$LANG['POST_BOX_EXTRA']						= "Extra";
+$LANG['POST_BOX_IS_SPOILER']				= "Is spoiler?";
+$LANG['POST_BOX_SUPPORTED_FILE_TYPES']		= "Supported file types are: %s";
+$LANG['POST_BOX_MAX_FILE_SIZE_ALLOWED']		= "Maximum file size allowed is: %s";
+$LANG['POST_BOX_IMAGE_THUMBNAIL_SIZE']		= "Images larger than %d x %d will be thumbnailed.";
+$LANG['POST_BOX_SHOW_POST_TAGS']			= "This board shows all posts tagged with: %s.";
+$LANG['POST_BOX_AUTO_POST_TAGS']			= "This board automatically tags posts with: %s.";
+$LANG['POST_BOX_UPLOAD_REQUIRED_FOR_TOPIC']	= "Upload required to create topic.";
+$LANG['POST_BOX_EMPTY_COMMENTS_NOT_ALLOWED']= "Empty comments are not allowed.";
+$LANG['POST_BOX_DUPLICATE_UPLOADS_BLOCKED']	= "Duplicate uploads are blocked.";
 
 // -------------------------------------------------------------
 //	Board Index.
@@ -51,6 +70,7 @@ $LANG['BOARD_INDEX_LOCKED'] = "Board is locked, topics and replies cannot be pos
 $LANG['MANAGE_TITLE'] 				= "Management Panel";
 $LANG['NO_USERNAME']  				= "No username was given.";
 $LANG['NO_PASSWORD']  				= "No password was given.";
+$LANG['LOGIN_TIMEOUT']				= "You have failed to login to many times.<br/><br/>You can now no longer login for %s seconds after your last failed attempt.";
 $LANG['INVALID_LOGIN']  			= "The login provided was invalid.";
 $LANG['ACCOUNT_DISABLED']			= "The login provided has been disabled.";
 $LANG['USERNAME_LABEL']				= "Username";
@@ -98,6 +118,8 @@ $LANG['MANAGE_MENU_VIEW_DELETED_POSTS']	= "View Deleted Posts";
 $LANG['MANAGE_MENU_VIEW_REPORTED_POSTS']= "View Reported Posts";
 $LANG['MANAGE_MENU_VIEW_RECENT_POSTS']	= "View Recent Posts";
 $LANG['MANAGE_MENU_VIEW_LOGS']			= "View Logs";
+$LANG['MANAGE_MENU_MANAGE_TAGS']		= "Manage Tags";
+$LANG['MANAGE_MENU_MANAGE_LANGUAGES']	= "Manage Languages";
 
 // -------------------------------------------------------------
 //	Preferences page.
@@ -112,6 +134,7 @@ $LANG['PREFERENCES_LANGUAGE_TITLE']				= "Choose Language";
 $LANG['PREFERENCES_LANGUAGE_DESCRIPTION']		= "Allows you to localize the template text into different languages.";
 $LANG['PREFERENCES_TIMEZONE_TITLE']				= "Choose TimeZone";
 $LANG['PREFERENCES_TIMEZONE_DESCRIPTION']		= "Selecting different time-zones will change how dates and times are displayed throughout the site.";
+$LANG['PREFERENCES_APPLIED_SUCCESSFULLY']		= "Preferences applied successfully.";
 
 // -------------------------------------------------------------
 //	Home page.
@@ -130,6 +153,12 @@ $LANG['MANAGEMENT_PANEL_HOME_GRAPHS']		= "Graphs";
 // -------------------------------------------------------------
 $LANG['404_ERROR_TITLE'] 	= '404 Not Found';
 $LANG['404_ERROR_MESSAGE'] 	= 'The page you requested could not be found.';
+
+// -------------------------------------------------------------
+//	403 Forbidden
+// -------------------------------------------------------------
+$LANG['403_ERROR_TITLE'] 	= '403 Forbidden';
+$LANG['403_ERROR_MESSAGE'] 	= 'The do not have the required permission to access this page.';
 
 // -------------------------------------------------------------
 //	500 Internal Server.

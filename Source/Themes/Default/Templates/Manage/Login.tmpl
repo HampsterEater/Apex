@@ -19,6 +19,8 @@
 			{{ LANG("INVALID_LOGIN") }}
 		{% elseif error_type=="account_disabled" %}
 			{{ LANG("ACCOUNT_DISABLED") }}
+		{% elseif error_type=="timeout" %}
+			{{ LANG("LOGIN_TIMEOUT", Settings.DatabaseSettings['failed_login_expire_time'])|raw }}
 		{% endif %}		
 		<br/><br/></div>
 	</center>
@@ -35,7 +37,7 @@
 		</tr>
 		<tr>
 			<td class="postblock">{{ LANG("PASSWORD_LABEL") }}</td>
-			<td><input type="password" name="password" id="password" style="width:119px;" value="" style="password"/> <input type="submit" value="Submit"/></td>
+			<td><input type="password" name="password" id="password" style="width:119px;" value="" style="password"/> <input type="submit" value="{{ LANG('SUBMIT') }}"/></td>
 		</tr>
 		<tr>
 			<td colspan="2"style="text-align:center; font-size: 75%;"><br/><a href="{{ BASE_SCRIPT_URI }}manage/resetpassword/">{{ LANG("FORGOTTEN_PASSWORD_LINK") }}</a></td>

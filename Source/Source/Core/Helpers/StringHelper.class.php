@@ -61,6 +61,30 @@ class StringHelper
 	}
 	
 	// -------------------------------------------------------------
+	//	Generates a tripcode based on a password.
+	//
+	//	@param pw Password to generate from.
+	//
+	//	@returns Tripcode for pw.
+	// -------------------------------------------------------------
+	public static function GenerateTripcode($pw)
+	{
+		$pw = mb_convert_encoding($pw,'SJIS','UTF-8');
+		$pw = str_replace('&','&amp;',$pw);
+		$pw = str_replace('"','&quot;',$pw);
+		$pw = str_replace("'",'&#39;',$pw);
+		$pw = str_replace('<','&lt;',$pw);
+		$pw = str_replace('>','&gt;',$pw);
+		
+		$salt = substr($pw.'H.',1,2);
+		$salt = preg_replace('/[^.\/0-9:;<=>?@A-Z\[\\\]\^_`a-z]/','.',$salt);
+		$salt = strtr($salt,':;<=>?@[\]^_`','ABCDEFGabcdef');
+		
+		$trip = substr(crypt($pw,$salt),-10);
+		return $trip;
+	}
+
+	// -------------------------------------------------------------
 	//	Formats a user-entered string. This function deals with 
 	//	santizing a string for output to a browser and also parses
 	//	bbcode.
@@ -83,6 +107,24 @@ class StringHelper
 		// First of all, clean up all html entities (prevent 
 		// *should* be safe to go.
 		return $input;
+	}
+	
+	// -------------------------------------------------------------
+	//	Formats a number of bytes into a human readable version.
+	//		eg. 1024 turns into 1kb
+	//
+	//	@param bytes Number of bytes to format.
+	//
+	//	@returns Formatted version of $bytes.
+	// -------------------------------------------------------------
+	public static function FormatSize($bytes, $precision = 2)
+	{
+		// Chris Jester-Young's implementation, cleanest I've seen.
+		
+		$base 	  = log($bytes) / log(1024);
+		$suffixes = array('B', 'KB', 'MB', 'GB', 'TB');   
+
+		return round(pow(1024, $base - floor($base)), $precision) . $suffixes[floor($base)];
 	}
 	
 	// -------------------------------------------------------------

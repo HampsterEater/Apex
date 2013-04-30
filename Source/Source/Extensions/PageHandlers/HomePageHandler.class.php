@@ -70,6 +70,9 @@ class HomePageHandler extends PageHandler
 	// -------------------------------------------------------------
 	public function RenderPage($arguments = array())
 	{
+		// Check permissions.
+		$this->m_engine->Member->AssertAllowedTo("view_home_page");
+		
 		$arguments['news_categories'] = array();
 		$arguments['news_items'] = array();
 

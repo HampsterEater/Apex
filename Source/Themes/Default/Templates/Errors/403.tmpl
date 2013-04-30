@@ -1,0 +1,18 @@
+{% extends "Base.tmpl" %}
+
+{% block title %}{{ Settings.DatabaseSettings['site_name'] }} - {{ LANG("403_ERROR_TITLE") }}{% endblock %}
+
+{% block content %}
+<div class="HorizontalBreak"></div>
+<br/>
+
+<center>
+	<div id="error_message_text">{{ LANG("403_ERROR_TITLE") }}<br/><br/>{{ LANG("403_ERROR_MESSAGE") }}</div>
+	<br/>
+	
+	<div id="go_back_text">[<a href="javascript:history.go(-1);">{{ LANG("GO_BACK_LINK") }}</a>]</div>
+</center>
+
+<br/>
+<div class="HorizontalBreak"></div>
+{% endblock %}

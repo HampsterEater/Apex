@@ -30,6 +30,7 @@ $WHITE_DIRECTORIES   = array("Source",
 									"Source/Core/Helpers",
 									"Source/Core/Libraries",
 										"Source/Core/Libraries/Twig",
+										"Source/Core/Libraries/Recaptcha",
 								"Source/Extensions",
 									"Source/Extensions/CacheProviders",
 									"Source/Extensions/HookProviders",
@@ -61,12 +62,14 @@ $WHITE_FILES   		 = array("index.php",
 								"Source/Core/PageHandler.class.php",
 								"Source/Core/Language.class.php",
 								
+								"Source/Core/Helpers/ImageHelper.class.php",
 								"Source/Core/Helpers/StringHelper.class.php",
 								"Source/Core/Helpers/FileHelper.class.php",
 								"Source/Core/Helpers/BrowserHelper.class.php",
 								"Source/Core/Helpers/ReflectionHelper.class.php",
 								
-								"Source/Core/Libraries/Twig/Autoloader.php");
+								"Source/Core/Libraries/Twig/Autoloader.php",
+								"Source/Core/Libraries/Recaptcha/recaptchalib.php");
 
 // What files we are not allowed to have.
 $BLACK_FILES   		 = array();
@@ -135,6 +138,17 @@ if (!extension_loaded('gd'))
 	fail_install_check("
 		Server does not have the GD (<a href='http://www.php.net/manual/en/image.setup.php'>Download Link</a>) extension installed and enabled.<br/>
 		This software requires GD to run.
+	");
+} 
+
+// -------------------------------------------------------------
+//	Check for exif.
+// -------------------------------------------------------------
+if (!extension_loaded('exif'))
+{
+	fail_install_check("
+		Server does not have the EXIF (<a href='http://www.php.net/manual/en/intro.exif.php'>Download Link</a>) extension installed and enabled.<br/>
+		Although not required EXIF features will not work without this installed. Please install EXIF extension or remove this install validation check.
 	");
 } 
 

@@ -30,8 +30,12 @@ define("BASE_PATH", 		 dirname(__FILE__) . DIRECTORY_SEPARATOR);
 define("BASE_URI",  		 "http" . (!empty($_SERVER['HTTPS']) ? "s" : "") . "://" . 														// http://										
 								$_SERVER['SERVER_NAME'] . 																					//		  hostname						
 								(!empty($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] != 80 ? ':' . $_SERVER['SERVER_PORT'] : '') . 	//			 	  :port
-									$_SERVER['SCRIPT_NAME']);	
-									// 					   /index.php
+									$_SERVER['SCRIPT_NAME']);						
+// Full URI: http://domain.com/apex/index.php/herp/derp
+define("FULL_URI",  		 "http" . (!empty($_SERVER['HTTPS']) ? "s" : "") . "://" . 														// http://										
+								$_SERVER['SERVER_NAME'] . 																					//		  hostname						
+								(!empty($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] != 80 ? ':' . $_SERVER['SERVER_PORT'] : '') . 	//			 	  :port
+									$_SERVER['REQUEST_URI']);	
 // Base URI Directory: http://domain.com/apex/
 define("BASE_URI_DIR",  	 dirname(BASE_URI) . '/');																		
 
@@ -49,8 +53,10 @@ if (file_exists(BASE_PATH . "check.php") &&
 
 // Include library source code.
 require(BASE_PATH . "Source/Core/Libraries/Twig/Autoloader.php");
+require(BASE_PATH . "Source/Core/Libraries/Recaptcha/recaptchalib.php");
 
 // Include helper files.
+require(BASE_PATH . "Source/Core/Helpers/ImageHelper.class.php");
 require(BASE_PATH . "Source/Core/Helpers/BrowserHelper.class.php");
 require(BASE_PATH . "Source/Core/Helpers/StringHelper.class.php");
 require(BASE_PATH . "Source/Core/Helpers/FileHelper.class.php");

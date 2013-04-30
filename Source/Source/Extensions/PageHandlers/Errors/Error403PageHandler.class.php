@@ -4,11 +4,10 @@
 //	Apex Imageboard Software
 //	Copyright (C) 2013 TwinDrills, All Rights Reserved
 // -------------------------------------------------------------
-//	File: 	managelogoutpagehandler.class.php
+//	File: 	error403pagehandler.class.php
 //	Author: tim
 // -------------------------------------------------------------
-//	This file contains the page handler for the "logout" page in 
-//	the management area.
+//	This file contains the page handler for 403 errors.
 // -------------------------------------------------------------
 
 // Check we are not being accessed directly.
@@ -18,13 +17,12 @@ if (!defined("ENTRY_POINT"))
 }
 
 // -------------------------------------------------------------
-//	This class handles showing the "logout" page in the 
-//	management area.
+//	This class handles 403 not found errors.
 //
 //	URI for this handler is:
-// 		/index.php/manage/logout
+// 		/index.php/error/403
 // -------------------------------------------------------------
-class ManageLogoutPageHandler extends PageHandler
+class Error403PageHandler extends PageHandler
 {
 
 	// Engine that constructed this class.
@@ -46,8 +44,8 @@ class ManageLogoutPageHandler extends PageHandler
 	public function CanHandleURI($uri_arguments)
 	{
 		if (count($uri_arguments) == 2 &&
-			$uri_arguments[0] == "manage" &&
-			$uri_arguments[1] == "logout")
+			$uri_arguments[0] 	  == "error" &&
+			$uri_arguments[1]	  == "403")
 		{
 			return true;
 		}
@@ -71,18 +69,8 @@ class ManageLogoutPageHandler extends PageHandler
 	//	the current page.
 	// -------------------------------------------------------------
 	public function RenderPage($arguments = array())
-	{	
-		// Check permissions.
-		$this->m_engine->Member->AssertAllowedTo("view_logout_page");
-		
-		// Are we even logged in?
-		if (!$this->m_engine->IsLoggedIn())
-		{
-			BrowserHelper::RedirectExit(BASE_SCRIPT_URI);
-		}
-
-		$this->m_engine->Logout();
-		BrowserHelper::RedirectExit(BASE_SCRIPT_URI . "manage/");
+	{
+		$this->m_engine->RenderTemplate("Errors/403.tmpl", $arguments);
 	}
 	
 }

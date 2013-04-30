@@ -1,0 +1,1 @@
+DELETE FROM failed_login_attempts WHERE create_ip = :create_ip AND create_time < :min_time

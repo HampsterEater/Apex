@@ -1,0 +1,1 @@
+SELECT * FROM posts WHERE upload_hash=:upload_hash AND is_deleted!=1

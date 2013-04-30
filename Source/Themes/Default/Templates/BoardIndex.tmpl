@@ -3,7 +3,20 @@
 {% block title %}{{ Settings.DatabaseSettings['site_name'] }} - /{{ board.url }}/{% endblock %}
 
 {% block javascript_imports %}
+<script type="text/javascript" src="{{ THEME_DIR_URI }}JavaScript/General.js"></script>
 <script type="text/javascript" src="{{ THEME_DIR_URI }}JavaScript/BoardIndex.js"></script>
+ <script type="text/javascript">
+ var RecaptchaOptions = 
+ {
+    theme: 'custom'
+ };
+ </script>
+{% endblock %}
+
+{% block extra_management_links %}
+	{% if board.password != "" and IsAllowedTo("bypass_passwords", board.id) == false %}
+		<a href="{{ BASE_SCRIPT_URI ~ board.url }}/logout">{{ LANG("MENU_LOGOUT_OF_BOARD", board.url) }}</a> -
+	{% endif %}
 {% endblock %}
 
 {% block page_title %}
@@ -22,49 +35,97 @@
 	{% else %}
 		<form enctype="multipart/form-data" action="{{ BASE_SCRIPT_URI }}{{ board.url }}/post/" method="POST" name="replyform" id="replyform">
 
-			<input type="hidden" name="topicid" id="topicid" value="0"/>
-			<input type="hidden" name="editid" id="editid" value="0" />
+			<input type="hidden" name="SESSION" id="SESSION" value="{{ SESSION_ID }}"/>	
+			<input type="hidden" name="parent_id" id="parent_id" value="0"/>
 	
 			<table cellspacing="2px" cellpadding="0px" id="postbox">	
 				{% if board.is_forced_anonymous == false %}
 					<tr>
-						<td class="postblock">Name</td>
-						<td><input type="text" name="name" id="name" size="28" value="{user.postName}"/></td>
+						<td class="postblock">{{ LANG("POST_BOX_NAME") }}</td>
+						<td colspan="2"><input type="text" name="name" id="name" saved_field="saved_name" size="28" style="width:100%;" value=""/></td>
 					</tr>
 					<tr>
-						<td class="PostBlock">Email</td>
-						<td><input type="text" name="email" id="email" size="28"  value="{user.postEmail}"/></td>
+						<td class="postblock">{{ LANG("POST_BOX_EMAIL") }}</td>
+						<td colspan="2"><input type="text" name="email" id="email" saved_field="saved_email" size="28" style="width:100%;" value=""/></td>
 					</tr>
 				{% endif %}		
 				<tr>
-					<td class="PostBlock">Subject</td>
-					<td><input type="text" name="subject" id="subject" size="35" value="{user.postSubject}"/> <input type="submit" value="Submit"/> <span id="formSubmitInfo" style="font-size: 75%;"></span></td>
+					<td class="postblock">{{ LANG("POST_BOX_SUBJECT") }}</td>
+					<td style="padding-right: 5px;"><input type="text" name="subject" id="subject" size="35" value="" style="width:100%;" /></td>
+					<td style="text-align: right;"><input type="submit" value="{{ LANG('SUBMIT') }}" style="width:100%; margin-left: 6px;"/></td>
 				</tr>
 				<tr>
-					<td class="PostBlock">Comment</td>
-					<td><textarea id="comment" name="comment" cols="48" rows="4"></textarea></td>
+					<td class="postblock">{{ LANG("POST_BOX_COMMENT") }}</td>
+					<td colspan="2" style="padding-right:3px;"><textarea id="comment" name="comment" cols="48" rows="4" style="width:100%;"></textarea></td>
 				</tr>
+				{% if board.use_recaptcha == true %}
+					<tr>
+						<td class="postblock">{{ LANG("POST_BOX_VERIFICATION") }}</td>
+						<td colspan="2">
+							<table style="width:100%" cellspacing="0px" cellpadding="0px">
+								<tr>
+									<td>
+										<div style="margin-left:2px; width:100%; background-color:#FFF;">
+											<div id="recaptcha_image" style="width:300px; height:57px;"></div>
+										</div>
+									</td>
+									<td style="width:10px; vertical-align:top; padding-left:8px; padding-top:4px;">
+										<div style="margin-bottom:-3px;"><a href="javascript:Recaptcha.reload()"><img src="http://www.google.com/recaptcha/api/img/clean/refresh.png"/></a></div>
+										<div style="margin-bottom:-3px;" class="recaptcha_only_if_image"><a href="javascript:Recaptcha.switch_type('audio')"><img src="http://www.google.com/recaptcha/api/img/clean/audio.png"/></a></div>
+										<div style="margin-bottom:-3px;" class="recaptcha_only_if_audio"><a href="javascript:Recaptcha.switch_type('image')"><img src="http://www.google.com/recaptcha/api/img/clean/text.png"/></a></div>						 
+										<div><a href="javascript:Recaptcha.showhelp()"><img src="http://www.google.com/recaptcha/api/img/clean/help.png"/></a></div>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<td class="postblock"></td>
+						<td colspan="2" style="padding-right: 37px;">
+							<input type="text" placeholder="{{ LANG('POST_BOX_RECAPTCHA_PLACEHOLDER') }}" name="recaptcha_response_field" id="recaptcha_response_field" size="35" value="" style="width:100%;" /><br/>
+							{{ recaptcha_html|raw }}
+						</td>
+					</tr>
+				{% endif %}
+				{% if board.post_upload_limit > 0 %}
+					{% for i in range(1, board.post_upload_limit) %}
+					<tr id="file{{ i }}_row" style="display: {{ i == 1 ? "table-row" : "none" }};">
+						<td class="postblock">{{ LANG("POST_BOX_FILE", i) }}</td>
+						<td colspan="2">
+							<input name="upload_{{ i }}" type="file" size="48" onchange="set_file_count({{ i + 1 }});" />
+						</td>
+					</tr>
+					{% endfor %}
+				{% endif %}
 				<tr>
-					<td class="PostBlock">Captcha</td>
-					<td><br/><br/><br/><br/></td>
-				</tr>
+					<td class="postblock">{{ LANG("POST_BOX_PASSWORD") }}</td> 
+					<td colspan="2"><input name="password" type="password" saved_field="saved_password" size="8" style="width: 150px;" value=""/> <span style="font-size:75%;">(for post and file deletion)</span></td>
+				</tr>				
+				{% if board.post_upload_limit > 0 %}
+					<tr>
+						<td class="postblock">{{ LANG("POST_BOX_EXTRA") }}</td> 
+						<td colspan="2"><input type="checkbox" name="is_spoiler" id="isSpoiler" /> {{ LANG("POST_BOX_IS_SPOILER") }}</td>
+					</tr>			
+				{% endif %}
 				<tr>
-					<td class="PostBlock">Files</td>
-					<td><br/><br/><br/><br/></td>
-				</tr>
-				<tr>
-					<td class="PostBlock">Password</td> 
-					<td><input name="password" type="password" size="8" value="{user.postPassword}"/> (for post and file deletion)</td>
-				</tr>
-				<tr>
-					<td class="PostBlock">Extra</td> 
-					<td>[ <input type="checkbox" name="is_spoiler" id="isSpoiler" /> Is Spoiler ]</td>
-				</tr>			
-				<tr>
-					<td colspan="2" id="postbox_rules">
-						<ul>
-							<li>Supported file types are: {{ board.allowed_upload_extensions }}</li>
-							<li>Maximum file size allowed is {{ board.max_file_size }}.</li>
+					<td colspan="3" id="postbox_rules">
+						<ul>							
+							{% if board.post_upload_limit > 0 %}
+								<li>{{ LANG("POST_BOX_SUPPORTED_FILE_TYPES", board.allowed_upload_file_types_string) }}</li>
+								<li>{{ LANG("POST_BOX_MAX_FILE_SIZE_ALLOWED", FormatSize(board.max_upload_size)) }}</li>
+								<li>{{ LANG("POST_BOX_IMAGE_THUMBNAIL_SIZE", board.max_image_thumbnail_width, board.max_image_thumbnail_height) }}</li>
+							{% endif %}
+							<li>{{ LANG("POST_BOX_SHOW_POST_TAGS", board.post_filter_tags_string) }}</li>
+							<li>{{ LANG("POST_BOX_AUTO_POST_TAGS", board.auto_tags) }}</li>
+							{% if board.post_upload_limit > 0 and board.require_upload_for_topic %}
+								<li>{{ LANG("POST_BOX_UPLOAD_REQUIRED_FOR_TOPIC") }}</li>
+							{% endif %}
+							{% if board.allow_blank_posts %}
+								<li>{{ LANG("POST_BOX_EMPTY_COMMENTS_NOT_ALLOWED") }}</li>
+							{% endif %}
+							{% if board.block_duplicate_uploads %}
+								<li>{{ LANG("POST_BOX_DUPLICATE_UPLOADS_BLOCKED") }}</li>
+							{% endif %}
 						</ul>
 					</td>
 				</tr>		

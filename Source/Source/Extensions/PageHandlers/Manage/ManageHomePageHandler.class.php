@@ -71,6 +71,9 @@ class ManageHomePageHandler extends PageHandler
 	// -------------------------------------------------------------
 	public function RenderPage($arguments = array())
 	{
+		// Check permissions.
+		$this->m_engine->Member->AssertAllowedTo("view_management_page");
+		
 		// If we are not logged in, redirect to login page.
 		if ($this->m_engine->IsLoggedIn() == false)
 		{

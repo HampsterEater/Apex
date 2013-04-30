@@ -44,7 +44,7 @@ class PreferencesPageHandler extends PageHandler
 	// -------------------------------------------------------------
 	public function CanHandleURI($uri_arguments)
 	{
-		if (count($uri_arguments) == 1 ||
+		if (count($uri_arguments) == 1 &&
 			$uri_arguments[0] == "preferences")
 		{
 			return true;
@@ -70,6 +70,11 @@ class PreferencesPageHandler extends PageHandler
 	// -------------------------------------------------------------
 	public function RenderPage($arguments = array())
 	{		
+		$arguments['success'] = false;
+			
+		// Check permissions.
+		$this->m_engine->Member->AssertAllowedTo("view_preferences_page");
+			
 		// Get list of timezones.
 		$arguments['timezones'] = timezone_identifiers_list();
 		
@@ -91,6 +96,8 @@ class PreferencesPageHandler extends PageHandler
 			$this->m_engine->Settings->RequestValues['cookies']['timezone'] 	= $this->m_engine->Settings->RequestValues['timezone'];
 			$this->m_engine->Settings->RequestValues['cookies']['use_mobile'] 	= isset($this->m_engine->Settings->RequestValues['use_mobile']);
 			$this->m_engine->StoreCookieSettings();
+			
+			$arguments['success'] = true;
 		}
 		
 		// Render the template.

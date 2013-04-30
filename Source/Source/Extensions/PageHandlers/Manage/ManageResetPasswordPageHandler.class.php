@@ -72,6 +72,9 @@ class ManageResetPasswordPageHandler extends PageHandler
 	// -------------------------------------------------------------
 	public function RenderPage($arguments = array())
 	{
+		// Check permissions.
+		$this->m_engine->Member->AssertAllowedTo("view_reset_password_page");
+		
 		// Are we even logged in?
 		if ($this->m_engine->IsLoggedIn())
 		{
@@ -90,10 +93,11 @@ class ManageResetPasswordPageHandler extends PageHandler
 		if (isset($this->m_engine->Settings->RequestValues['email']))
 		{
 			$member		= $this->m_engine->Member->Settings;
-			$email 		= trim($this->m_engine->Settings->RequestValues['email']);
+			$email 		= trim($this->m_engine->Settings->RequestValues['email']);			
 			
 			if ($email == "")
 			{
+				$this->m_engine->Logger->Log("User attempted to request a reset password link but did not provide an email.");
 				$arguments['error_type'] = "no_email";
 			}
 			else
@@ -130,6 +134,12 @@ class ManageResetPasswordPageHandler extends PageHandler
 					$email_sender	 	= vsprintf($email_sender, 	array($site_domain));
 
 					mail($email_recipient, $email_subject, $email_body, "From: " . $email_sender . "\r\n");
+
+					$this->m_engine->Logger->Log("User requested a reset password link for email '{$email}'.");
+				}
+				else
+				{
+					$this->m_engine->Logger->Log("User requested a reset password link for email '{$email}', but account with email does not exist.");				
 				}
 				
 				// Show success regardless of if we found an email or not.

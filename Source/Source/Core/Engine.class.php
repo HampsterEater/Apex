@@ -135,7 +135,7 @@ class Engine
 	//	Loads and sanitizes all request variables.
 	// -------------------------------------------------------------
 	public function InitRequestVariables()
-	{
+	{	
 		// Store URI arguments.
 		$this->Settings->URIArguments = array();		
 		if (isset($_SERVER["PATH_INFO"]))
@@ -162,7 +162,10 @@ class Engine
 			$cleaned_value["tmp_name"] = StringHelper::CleanRequestVariable($value["tmp_name"]);
 			$cleaned_value["error"]	   = (int)$value["error"];
 
-			$this->Settings->RequestValues["files"][$key] = $cleaned_value;
+			if ($cleaned_value["error"] != UPLOAD_ERR_NO_FILE)
+			{
+				$this->Settings->RequestValues["files"][$key] = $cleaned_value;
+			}
 		}		
 		
 		// Add cookies to settings.
@@ -277,6 +280,7 @@ class Engine
 		$this->TwigEnvironment->addGlobal("THEME_DIR_URI", 		BASE_URI_DIR . $this->Settings->ThemePath);
 		$this->TwigEnvironment->addGlobal("Settings", 			$this->Settings);
 		$this->TwigEnvironment->addGlobal("Engine", 			$this);
+		$this->TwigEnvironment->addFunction('FormatSize', 		new Twig_Function_Function('StringHelper::FormatSize'));
 		
 		// Add LANG function which allows the template to get a language
 		// specific string with optiomal formatting pattern.
@@ -299,6 +303,16 @@ class Engine
 		);
 		$this->TwigEnvironment->addFunction($function);
 
+		// Add IsAllowedTo function, allows templates to check if a user
+		// has permission to do certain things.
+		$function = new Twig_SimpleFunction('IsAllowedTo', 
+			function ($key) 
+			{
+				return $this->Member->IsAllowedTo($key);
+			}
+		);
+		$this->TwigEnvironment->addFunction($function);
+		
 		// Add microtime function, used mainly for getting the 
 		// templates generation timestamp.
 		$function = new Twig_SimpleFunction('microtime', 
@@ -412,15 +426,6 @@ class Engine
 	}	
 	
 	// -------------------------------------------------------------
-	//	Checks if a user can perform the given permission on the 
-	//	given board.
-	// -------------------------------------------------------------
-	public function IsAllowedTo($action, $board_id = -1)
-	{
-		return $this->Member->IsAllowedTo($action, $board_id);
-	}	
-	
-	// -------------------------------------------------------------
 	//	Returns true if the user is logged in.
 	// -------------------------------------------------------------
 	public function IsLoggedIn()
@@ -464,9 +469,9 @@ class Engine
 				return $board;
 			}
 		}
-		return null;
+		return false;
 	}
-	
+		
 	// -------------------------------------------------------------
 	//  Core function, takes the users requests and does what is
 	//	neccessary to fulfill it.

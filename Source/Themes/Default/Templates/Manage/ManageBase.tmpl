@@ -8,39 +8,104 @@
 
 <div class="management_nav_container">
 
-	<div class="management_nav_category">
-		{{ LANG('MANAGE_MENU_ACCOUNT') }}
-	</div>
-	<div class="management_nav_links">
-		<a href="{{ BASE_SCRIPT_URI }}manage/changepassword">{{ LANG('MANAGE_MENU_CHANGE_PASSWORD') }}</a>
-		<a href="{{ BASE_SCRIPT_URI }}manage/logout">{{ LANG('MANAGE_MENU_LOG_OUT') }}</a>
-	</div>
-	
-	<div class="management_nav_category">
-		{{ LANG('MANAGE_MENU_ADMINISTRATION') }}
-	</div>
-	<div class="management_nav_links">
-		<a href="{{ BASE_SCRIPT_URI }}manage">{{ LANG('MANAGE_MENU_OVERVIEW') }}</a>
-		<a href="{{ BASE_SCRIPT_URI }}manage/settings">{{ LANG('MANAGE_MENU_MANAGE_SETTINGS') }}</a>
-		<a href="{{ BASE_SCRIPT_URI }}manage/boards">{{ LANG('MANAGE_MENU_MANAGE_BOARDS') }}</a>
-		<a href="{{ BASE_SCRIPT_URI }}manage/news">{{ LANG('MANAGE_MENU_MANAGE_NEWS') }}</a>
-		<a href="{{ BASE_SCRIPT_URI }}manage/filters">{{ LANG('MANAGE_MENU_MANAGE_FILTERS') }}</a>
-		<a href="{{ BASE_SCRIPT_URI }}manage/themes">{{ LANG('MANAGE_MENU_MANAGE_THEMES') }}</a>
-		<a href="{{ BASE_SCRIPT_URI }}manage/members">{{ LANG('MANAGE_MENU_MANAGE_MEMBERS') }}</a>
-		<a href="{{ BASE_SCRIPT_URI }}manage/files">{{ LANG('MANAGE_MENU_FILE_MANAGER') }}</a>
-	</div>
+	{% if IsAllowedTo('view_change_password_page') 	== true or
+		  IsAllowedTo('view_logout_page') 			== true %}
 
-	<div class="management_nav_category">
-		{{ LANG('MANAGE_MENU_MODERATION') }}
-	</div>
-	<div class="management_nav_links">
-		<a href="{{ BASE_SCRIPT_URI }}manage/bans">{{ LANG('MANAGE_MENU_MANAGE_BANS') }}</a>
-		<a href="{{ BASE_SCRIPT_URI }}manage/banappeals">{{ LANG('MANAGE_MENU_VIEW_BAN_APPEALS') }}</a>
-		<a href="{{ BASE_SCRIPT_URI }}manage/deletedposts">{{ LANG('MANAGE_MENU_VIEW_DELETED_POSTS') }}</a>
-		<a href="{{ BASE_SCRIPT_URI }}manage/reportedposts">{{ LANG('MANAGE_MENU_VIEW_REPORTED_POSTS') }}</a>
-		<a href="{{ BASE_SCRIPT_URI }}manage/recentposts">{{ LANG('MANAGE_MENU_VIEW_RECENT_POSTS') }}</a>
-		<a href="{{ BASE_SCRIPT_URI }}manage/logs">{{ LANG('MANAGE_MENU_VIEW_LOGS') }}</a>
-	</div>
+		<div class="management_nav_category">
+			{{ LANG('MANAGE_MENU_ACCOUNT') }}
+		</div>
+		<div class="management_nav_links">
+			{% if IsAllowedTo('view_change_password_page') == true %}
+				<a href="{{ BASE_SCRIPT_URI }}manage/changepassword">{{ LANG('MANAGE_MENU_CHANGE_PASSWORD') }}</a>
+			{% endif %}
+			{% if IsAllowedTo('view_logout_page') == true %}
+				<a href="{{ BASE_SCRIPT_URI }}manage/logout">{{ LANG('MANAGE_MENU_LOG_OUT') }}</a>
+			{% endif %}
+		</div>
+		
+	{% endif %}
+	
+	{% if IsAllowedTo('view_management_page') 				== true or
+		  IsAllowedTo('view_management_settings_page') 		== true or
+		  IsAllowedTo('view_management_boards_page') 		== true or
+		  IsAllowedTo('view_management_news_page') 			== true or
+		  IsAllowedTo('view_management_filters_page') 		== true or
+		  IsAllowedTo('view_management_themes_page') 		== true or
+		  IsAllowedTo('view_management_members_page') 		== true or
+		  IsAllowedTo('view_management_languages_page') 	== true or
+		  IsAllowedTo('view_management_tags_page') 			== true or
+		  IsAllowedTo('view_management_files_page') 		== true %}
+
+		<div class="management_nav_category">
+			{{ LANG('MANAGE_MENU_ADMINISTRATION') }}
+		</div>
+		<div class="management_nav_links">		
+			{% if IsAllowedTo('view_management_page') == true %}
+				<a href="{{ BASE_SCRIPT_URI }}manage">{{ LANG('MANAGE_MENU_OVERVIEW') }}</a>
+			{% endif %}
+			{% if IsAllowedTo('view_management_settings_page') == true %}
+				<a href="{{ BASE_SCRIPT_URI }}manage/settings">{{ LANG('MANAGE_MENU_MANAGE_SETTINGS') }}</a>
+			{% endif %}
+			{% if IsAllowedTo('view_management_boards_page') == true %}
+				<a href="{{ BASE_SCRIPT_URI }}manage/boards">{{ LANG('MANAGE_MENU_MANAGE_BOARDS') }}</a>
+			{% endif %}
+			{% if IsAllowedTo('view_management_news_page') == true %}
+				<a href="{{ BASE_SCRIPT_URI }}manage/news">{{ LANG('MANAGE_MENU_MANAGE_NEWS') }}</a>
+			{% endif %}
+			{% if IsAllowedTo('view_management_filters_page') == true %}
+				<a href="{{ BASE_SCRIPT_URI }}manage/filters">{{ LANG('MANAGE_MENU_MANAGE_FILTERS') }}</a>
+			{% endif %}
+			{% if IsAllowedTo('view_management_themes_page') == true %}
+				<a href="{{ BASE_SCRIPT_URI }}manage/themes">{{ LANG('MANAGE_MENU_MANAGE_THEMES') }}</a>
+			{% endif %}
+			{% if IsAllowedTo('view_management_members_page') == true %}
+				<a href="{{ BASE_SCRIPT_URI }}manage/members">{{ LANG('MANAGE_MENU_MANAGE_MEMBERS') }}</a>
+			{% endif %}
+			{% if IsAllowedTo('view_management_languages_page') == true %}
+				<a href="{{ BASE_SCRIPT_URI }}manage/languages">{{ LANG('MANAGE_MENU_MANAGE_LANGUAGES') }}</a>
+			{% endif %}
+			{% if IsAllowedTo('view_management_tags_page') == true %}
+				<a href="{{ BASE_SCRIPT_URI }}manage/tags">{{ LANG('MANAGE_MENU_MANAGE_TAGS') }}</a>
+			{% endif %}
+			{% if IsAllowedTo('view_management_files_page') == true %}
+				<a href="{{ BASE_SCRIPT_URI }}manage/files">{{ LANG('MANAGE_MENU_FILE_MANAGER') }}</a>
+			{% endif %}	
+		</div>
+
+	{% endif %}
+
+	{% if IsAllowedTo('view_management_bans_page') == true or
+		  IsAllowedTo('view_management_ban_appeals_page') == true or
+		  IsAllowedTo('view_management_deleted_posts_page') == true or
+		  IsAllowedTo('view_management_reported_posts_page') == true or
+		  IsAllowedTo('view_management_recent_posts_page') == true or
+		  IsAllowedTo('view_management_logs_page') == true %}
+		  
+		<div class="management_nav_category">
+			{{ LANG('MANAGE_MENU_MODERATION') }}
+		</div>
+		<div class="management_nav_links">
+			{% if IsAllowedTo('view_management_bans_page') == true %}
+				<a href="{{ BASE_SCRIPT_URI }}manage/bans">{{ LANG('MANAGE_MENU_MANAGE_BANS') }}</a>
+			{% endif %}	
+			{% if IsAllowedTo('view_management_ban_appeals_page') == true %}
+				<a href="{{ BASE_SCRIPT_URI }}manage/banappeals">{{ LANG('MANAGE_MENU_VIEW_BAN_APPEALS') }}</a>
+			{% endif %}	
+			{% if IsAllowedTo('view_management_deleted_posts_page') == true %}
+				<a href="{{ BASE_SCRIPT_URI }}manage/deletedposts">{{ LANG('MANAGE_MENU_VIEW_DELETED_POSTS') }}</a>
+			{% endif %}	
+			{% if IsAllowedTo('view_management_reported_posts_page') == true %}
+				<a href="{{ BASE_SCRIPT_URI }}manage/reportedposts">{{ LANG('MANAGE_MENU_VIEW_REPORTED_POSTS') }}</a>
+			{% endif %}	
+			{% if IsAllowedTo('view_management_recent_posts_page') == true %}
+				<a href="{{ BASE_SCRIPT_URI }}manage/recentposts">{{ LANG('MANAGE_MENU_VIEW_RECENT_POSTS') }}</a>
+			{% endif %}	
+			{% if IsAllowedTo('view_management_logs_page') == true %}
+				<a href="{{ BASE_SCRIPT_URI }}manage/logs">{{ LANG('MANAGE_MENU_VIEW_LOGS') }}</a>
+			{% endif %}	
+		</div>
+
+	{% endif %}
 
 </div>
 

@@ -73,6 +73,9 @@ class ManageResetPasswordConfirmPageHandler extends PageHandler
 	// -------------------------------------------------------------
 	public function RenderPage($arguments = array())
 	{
+		// Check permissions.
+		$this->m_engine->Member->AssertAllowedTo("view_reset_password_confirm_page");
+		
 		// Are we even logged in?
 		if ($this->m_engine->IsLoggedIn())
 		{
@@ -95,6 +98,7 @@ class ManageResetPasswordConfirmPageHandler extends PageHandler
 		$result    = $this->m_engine->Database->Query("select_password_reset_link_by_hash", array(":link_hash" => $link_hash));
 		if (count($result->Rows) <= 0)
 		{
+			$this->m_engine->Logger->Log("User attempted to reset password for invalid or expired link '{$link_hash}'.");
 			$this->m_engine->Logger->NotFoundError("Password reset link specified was not found.");
 		}		
 		$reset_link = $result->Rows[0];
@@ -103,22 +107,25 @@ class ManageResetPasswordConfirmPageHandler extends PageHandler
 		$member = new Member($this->m_engine, $reset_link['member_id']);
 		if (!$member->LoadFromDatabase())
 		{
+			$this->m_engine->Logger->Log("User attempted to reset password using a link that points to a non-existant member '{$link_hash}'.");
 			$this->m_engine->Logger->NotFoundError("Password reset link specified was for a non-existant member.");
 		}
 		
 		// Have we submitted the form?
 		if (isset($this->m_engine->Settings->RequestValues['new_password']) &&
 			isset($this->m_engine->Settings->RequestValues['confirm_password']))
-		{
+		{		
 			$new_password 		= trim($this->m_engine->Settings->RequestValues['new_password']);
 			$confirm_password 	= trim($this->m_engine->Settings->RequestValues['confirm_password']);
-			
+		
 			if ($new_password == "" || $confirm_password == "")
-			{
+			{			
+				$this->m_engine->Logger->Log("User attempted to reset password for account '{$member['username']}', but did not provide all information required.");
 				$arguments['error_type'] = "no_password";
 			}
 			else if ($new_password != $confirm_password)
 			{
+				$this->m_engine->Logger->Log("User attempted to reset password for account '{$member['username']}', but password confirmation was invalid.");
 				$arguments['error_type'] = "invalid_confirm";
 			}
 			else
@@ -126,6 +133,8 @@ class ManageResetPasswordConfirmPageHandler extends PageHandler
 				$salt = hash("sha512", microtime(true));
 				$hash = hash("sha512", $new_password . $salt);
 					
+				$this->m_engine->Logger->Log("User attempted to reset password for account '{$member['username']}'.");
+				
 				// Change password.
 				$this->m_engine->Database->Query("update_member_password", array(":id" 		 => $member->ID,
 																				 ":password" => $hash,
@@ -133,7 +142,7 @@ class ManageResetPasswordConfirmPageHandler extends PageHandler
 																				 
 				// Delete password reset link.
 				$this->m_engine->Database->Query("delete_password_reset_link_by_id", array(":id" => $reset_link['id']));
-				
+
 				BrowserHelper::RedirectExit(BASE_SCRIPT_URI . 'manage/');
 			}
 		}

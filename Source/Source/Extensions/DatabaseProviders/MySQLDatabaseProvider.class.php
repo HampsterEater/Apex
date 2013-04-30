@@ -88,10 +88,15 @@ class MySQLDatabaseProvider extends DatabaseProvider
 	//
 	//	@param name 	 Name of prepared query to execute.
 	//	@param arguments Arguments to pass to the prepared query.
+	//	@param raw_arguments	Raw arguments allow you to replace ?? values in
+	//							prepared statements with strings. Be aware no
+	//							cleaning is done for this, and should be used as 
+	//							an absolute last resort. It is only here for things
+	//							like passing arrays which PDO dosen't support.
 	//
 	//	@returns A DatabaseResult instance.
 	// -------------------------------------------------------------
-	public function Query($name, $arguments = array())
+	public function Query($name, $arguments = array(), $raw_arguments = array())
 	{
 		if ($this->m_connection == null)
 		{
@@ -106,8 +111,14 @@ class MySQLDatabaseProvider extends DatabaseProvider
 				$this->m_engine->Logger->InternalError("Failed to read prepared query with the name '" . $name . "'.");
 			}
 			
-			$this->m_queryCount++;
+			// Replace prepared statements.
+			if (count($raw_arguments) > 0)
+			{
+				$search = array_fill(0, count($raw_arguments), "?");
+				$query = str_replace($search, $raw_arguments, $query);
+			}
 			
+			$this->m_queryCount++;
 			try
 			{
 				$stmt 					= $this->m_connection->prepare($query);
@@ -134,6 +145,70 @@ class MySQLDatabaseProvider extends DatabaseProvider
 		{
 			$this->m_engine->Logger->InternalError("Failed to find prepared query with the name '" . $name . "'.");
 		}
+	}
+	
+	// -------------------------------------------------------------
+	//	When called the provider will attempt to get as much 
+	//	information as it can about each column in the given table.
+	//
+	//	@param name 	 		Name of table to get information 
+	//							about.
+	//
+	//	@returns An array of column information or null if it
+	//			 could not be retrieved.
+	//
+	//			array
+	//			(
+	//				"column_a" => array
+	//				(
+	//					"name" 		=> "herp",
+	//					"type" 		=> "varchar",
+	//					"size"		=> 23;
+	//					"default" 	=> "herp",
+	//				)
+	//			)
+	//
+	// -------------------------------------------------------------
+	public function GetTableInfo($name)
+	{
+		$result = $this->Query("describe_table", array(), array( $name ));
+		if ($result == null)
+		{
+			return null;
+		}
+		
+		$columns = array();
+		foreach ($result->Rows as $row)
+		{
+			$type_split = explode("(", $row['Type']);
+		
+			$column_array = array();
+			$column_array['name'] 	 = $row['Field'];
+			$column_array['type'] 	 = $type_split[0];
+			$column_array['size'] 	 = count($type_split) > 1 ? intval(rtrim($type_split[1], ")")) : 0;
+			$column_array['default'] = $row['Default'];
+			
+			if ($column_array['type'] == "tinytext")
+			{
+				$column_array['size'] = 256;
+			}
+			if ($column_array['type'] == "text")
+			{
+				$column_array['size'] = 65535;
+			}
+			if ($column_array['type'] == "mediumtext")
+			{
+				$column_array['size'] = 16777215;
+			}
+			if ($column_array['type'] == "longtext")
+			{
+				$column_array['size'] = 4294967295;
+			}
+			
+			$columns[$column_array['name']] = $column_array;
+		}		
+		
+		return $columns;
 	}
 	
 	// -------------------------------------------------------------

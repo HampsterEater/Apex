@@ -88,9 +88,27 @@ class Logger
 	// -------------------------------------------------------------
 	public function NotFoundError($content)
 	{
+		$this->m_engine->Logger->Log("User recieved 404 error when viewing page: " . FULL_URI . "; " . $content);
+		
 		$this->DefaultError(array( "error", "404" ),
 							 "404 Not Found", 
 							 "Page Not Found",
+							 $content);
+	}
+	
+	// -------------------------------------------------------------
+	//  Takes an error message and emits and error page. If 
+	//	available the page will use the 403 not-found error template.
+	//
+	//	@param content Error message description.
+	// -------------------------------------------------------------
+	public function PermissionDeniedError($content)
+	{
+		$this->m_engine->Logger->Log("User denied permission to view page: " . FULL_URI . "; " . $content);
+		
+		$this->DefaultError(array( "error", "403" ),
+							 "403 Forbidden", 
+							 "Permission Denied",
 							 $content);
 	}
 
@@ -102,6 +120,8 @@ class Logger
 	// -------------------------------------------------------------
 	public function InternalError($content)
 	{
+		$this->m_engine->Logger->Log("User recieved 500 error when viewing page: " . FULL_URI . "; " . $content);
+		
 		$this->DefaultError(array( "error", "500" ),
 							 "500 Internal Server Error", 
 							 "Internal Error",

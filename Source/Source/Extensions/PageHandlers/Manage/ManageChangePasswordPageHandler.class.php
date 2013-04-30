@@ -72,6 +72,9 @@ class ManageChangePasswordPageHandler extends PageHandler
 	// -------------------------------------------------------------
 	public function RenderPage($arguments = array())
 	{
+		// Check permissions.
+		$this->m_engine->Member->AssertAllowedTo("view_change_password_page");
+		
 		$arguments = array_merge($arguments,
 			array
 			(
@@ -98,10 +101,12 @@ class ManageChangePasswordPageHandler extends PageHandler
 			
 			if ($old_password == "" || $new_password == "" || $confirm_password == "")
 			{
+				$this->m_engine->Logger->Log("Recieved attempt to change password for account '{$member['username']}' but didn't provide information.");
 				$arguments['error_type'] = "no_password";
 			}
 			else if ($new_password != $confirm_password)
 			{
+				$this->m_engine->Logger->Log("Recieved attempt to change password for account '{$member['username']}' but provided unconfirmed password.");
 				$arguments['error_type'] = "invalid_confirm";
 			}
 			else
@@ -109,6 +114,7 @@ class ManageChangePasswordPageHandler extends PageHandler
 				$hashed = hash("sha512", $old_password . $member['password_salt']);
 				if ($hashed != $member['password'])
 				{
+					$this->m_engine->Logger->Log("Recieved attempt to change password for account '{$member['username']}' but provided invalid old password.");
 					$arguments['error_type'] = "invalid_password";
 				}
 				
@@ -118,6 +124,8 @@ class ManageChangePasswordPageHandler extends PageHandler
 					$salt = hash("sha512", microtime(true));
 					$hash = hash("sha512", $new_password . $salt);
 					
+					$this->m_engine->Logger->Log("User changed password for account '{$member['username']}'.");
+
 					$this->m_engine->Database->Query("update_member_password", array(":id" 		 => $member['id'],
 																					 ":password" => $hash,
 																					 ":salt" 	 => $salt));

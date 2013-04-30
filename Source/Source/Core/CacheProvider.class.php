@@ -90,12 +90,12 @@ abstract class CacheProvider
 	// -------------------------------------------------------------
 	public function RemoveByPattern($pattern)
 	{
-		$keys = ListKeys();
+		$keys = $this->ListKeys();
 		foreach ($keys as $key)
 		{
 			if (fnmatch($pattern, $key))
 			{
-				Remove($key);
+				$this->Remove($key);
 			}
 		}
 	}

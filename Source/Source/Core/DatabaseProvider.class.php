@@ -65,12 +65,40 @@ abstract class DatabaseProvider
 	//	statement defined by the name given and will attempt to run
 	//	it with the arguments given.
 	//
-	//	@param name 	 Name of prepared query to execute.
-	//	@param arguments Arguments to pass to the prepared query.
+	//	@param name 	 		Name of prepared query to execute.
+	//	@param arguments 		Arguments to pass to the prepared query.
+	//	@param raw_arguments	Raw arguments allow you to replace ?? values in
+	//							prepared statements with strings. Be aware no
+	//							cleaning is done for this, and should be used as 
+	//							an absolute last resort. It is only here for things
+	//							like passing arrays which PDO dosen't support.
 	//
 	//	@returns A DatabaseResult instance.
 	// -------------------------------------------------------------
-	public abstract function Query($name, $arguments = array());
+	public abstract function Query($name, $arguments = array(), $raw_arguments = array());
+	
+	// -------------------------------------------------------------
+	//	When called the provider will attempt to get as much 
+	//	information as it can about each column in the given table.
+	//
+	//	@param name 	 		Name of table to get information 
+	//							about.
+	//
+	//	@returns An array of column information or null if it
+	//			 could not be retrieved.
+	//
+	//			array
+	//			(
+	//				"column_a" => array
+	//				(
+	//					"name" 		=> 0,
+	//					"datatype" 	=> "varchar",
+	//					"size" 		=> 4,
+	//				)
+	//			)
+	//
+	// -------------------------------------------------------------
+	public abstract function GetTableInfo($name);
 	
 	// -------------------------------------------------------------
 	//	When called the provider will attempt to disconnect

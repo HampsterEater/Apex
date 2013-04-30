@@ -91,5 +91,61 @@ class FileHelper
 			return substr($path, 0, $period_pos);
 		}
 	}
+	
+	// -------------------------------------------------------------
+	//	Gets the extension from a path.
+	//
+	//	@param path	Path to get extension from.
+	//
+	//	@returns Extension of path removed.
+	// -------------------------------------------------------------	
+	public static function ExtractExtension($path)
+	{	
+		$period_pos = strrpos($path, '.');
+		
+		if ($period_pos === FALSE)
+		{
+			return "";
+		}
+		else
+		{
+			return substr($path, $period_pos + 1);
+		}
+	}
+	
+	// -------------------------------------------------------------
+	//	Inserts a watermark onto the end of the path before the
+	//	extension.
+	//
+	//	@param path	Path to add watermark to.
+	//	@param mark	Wathermark to add.
+	//
+	//	@returns Path with watermark added.
+	// -------------------------------------------------------------	
+	public static function AddFileNameWatermark($path, $mark)
+	{	
+		$period_pos = strrpos($path, '.');
+		
+		if ($period_pos === FALSE)
+		{
+			return $path . $mark;
+		}
+		else
+		{
+			return  substr($path, 0, $period_pos) . $mark . substr($path, $period_pos);
+		}
+	}
 
+	// -------------------------------------------------------------
+	//	Sanitizes a filename so it only contains 0-9, a-z, . _ -.
+	//
+	//	@param text filename to sanitize.
+	//
+	//	@returns Sanitized version of text.
+	// -------------------------------------------------------------
+	public static function SanitizeFileName($text)
+	{
+		return preg_replace('/[^0-9a-z\.\_\-]/i', '', $text);
+	}
+	
 }

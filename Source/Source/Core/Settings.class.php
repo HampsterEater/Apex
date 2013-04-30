@@ -68,12 +68,19 @@ class Settings
 	//	These settings are static so change to whatever you want.
 	// -------------------------------------------------------------
 	
+	// Recaptcha settings.
+	public $RecaptchaPublicKey		= "6Lcfk-ASAAAAAIIf0QAaV-vwGjidBLLbJDgYW7a0";
+	public $RecaptchaPrivateKey		= "6Lcfk-ASAAAAAFvLvYvoDy_QXW3MjnwVIfz49Pu6";
+	
 	// Cookie settings.
 	public $CookieName				= "apex";
 	
 	// Template settings.
 	public $TemplateCacheDirectory	= "Cache/Templates/";
 	public $TemplateAutoReload		= true;
+	
+	// Upload settings.
+	public $UploadDirectory			= "Uploads/";
 	
 	// Database settings.
 	public $DatabaseHost 			= "127.0.0.1";	// ProTip: localhost is slow as shit during connection when IPv6 is enabled.
@@ -105,6 +112,7 @@ class Settings
 											
 											// Page handlers.
 											"Source/Extensions/PageHandlers/Errors/Error404PageHandler.class.php",
+											"Source/Extensions/PageHandlers/Errors/Error403PageHandler.class.php",
 											"Source/Extensions/PageHandlers/Errors/Error500PageHandler.class.php",
 											
 											"Source/Extensions/PageHandlers/Manage/ManageHomePageHandler.class.php",
@@ -116,6 +124,9 @@ class Settings
 											
 											"Source/Extensions/PageHandlers/HomePageHandler.class.php",
 											"Source/Extensions/PageHandlers/BoardIndexPageHandler.class.php",
+											"Source/Extensions/PageHandlers/BoardLoginPageHandler.class.php",
+											"Source/Extensions/PageHandlers/BoardPostPageHandler.class.php",
+											"Source/Extensions/PageHandlers/BoardLogOutPageHandler.class.php",
 											"Source/Extensions/PageHandlers/PreferencesPageHandler.class.php",
 										);	
 										
